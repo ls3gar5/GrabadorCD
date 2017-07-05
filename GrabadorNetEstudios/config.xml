@@ -1,0 +1,11 @@
+<?xml version = "1.0" encoding="Windows-1252" standalone="yes"?>
+<VFPData>
+    <cStrCon>Data Source=192.168.9.38;Initial Catalog=HERP_DEV;Integrated Security=False;User ID=holistor; password=H0listor.0;</cStrCon>
+    <cStoreProcedure>sp_Suite2HBM</cStoreProcedure>
+    <cSPSearch>sp_Suite2HBMSearch</cSPSearch>
+    <PATHEST>P:\Leonardo\Holistor\</PATHEST>
+    <PATHAGRO>P:\Leonardo\AGRO\</PATHAGRO>
+    <PATHGEST>P:\Leonardo\GESTION\</PATHGEST>
+    <PATHESTLOCAL>C:\Preparacion\</PATHESTLOCAL>
+    <lActiva>TRUE</lActiva>
+</VFPData>
