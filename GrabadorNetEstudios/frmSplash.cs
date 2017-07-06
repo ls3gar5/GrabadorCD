@@ -57,7 +57,7 @@ namespace GrabadorNetEstudios
         {
             timerSplash.Stop();
             pbSplash.Value = 100;
-            Thread.Sleep(5000);
+            Thread.Sleep(3000);
             this.Close();
         }
     }

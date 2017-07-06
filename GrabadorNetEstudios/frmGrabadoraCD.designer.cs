@@ -47,10 +47,6 @@ namespace GrabadorNetEstudios
             this.dgDatos = new System.Windows.Forms.DataGridView();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.btnBuscar = new System.Windows.Forms.Button();
-            this.CODCLI = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.NOMBRE = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Modulo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Descrip = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgDatosModulos)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgDatos)).BeginInit();
             this.SuspendLayout();
@@ -180,9 +176,6 @@ namespace GrabadorNetEstudios
             this.dgDatosModulos.AllowUserToDeleteRows = false;
             this.dgDatosModulos.AllowUserToResizeRows = false;
             this.dgDatosModulos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgDatosModulos.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Modulo,
-            this.Descrip});
             this.dgDatosModulos.Location = new System.Drawing.Point(9, 59);
             this.dgDatosModulos.MultiSelect = false;
             this.dgDatosModulos.Name = "dgDatosModulos";
@@ -195,9 +188,9 @@ namespace GrabadorNetEstudios
             // btnLoad
             // 
             this.btnLoad.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLoad.Location = new System.Drawing.Point(507, 20);
+            this.btnLoad.Location = new System.Drawing.Point(507, 32);
             this.btnLoad.Name = "btnLoad";
-            this.btnLoad.Size = new System.Drawing.Size(162, 33);
+            this.btnLoad.Size = new System.Drawing.Size(162, 21);
             this.btnLoad.TabIndex = 21;
             this.btnLoad.Text = "Vericar Nuevos Usuarios";
             this.btnLoad.UseVisualStyleBackColor = true;
@@ -209,9 +202,6 @@ namespace GrabadorNetEstudios
             this.dgDatos.AllowUserToDeleteRows = false;
             this.dgDatos.AllowUserToResizeRows = false;
             this.dgDatos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgDatos.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.CODCLI,
-            this.NOMBRE});
             this.dgDatos.Location = new System.Drawing.Point(259, 59);
             this.dgDatos.MultiSelect = false;
             this.dgDatos.Name = "dgDatos";
@@ -229,6 +219,7 @@ namespace GrabadorNetEstudios
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(100, 21);
             this.textBox1.TabIndex = 23;
+            this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // btnBuscar
             // 
@@ -240,38 +231,6 @@ namespace GrabadorNetEstudios
             this.btnBuscar.Text = "Buscar";
             this.btnBuscar.UseVisualStyleBackColor = true;
             this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
-            // 
-            // CODCLI
-            // 
-            this.CODCLI.DataPropertyName = "CODCLI";
-            this.CODCLI.HeaderText = "Usuario";
-            this.CODCLI.Name = "CODCLI";
-            this.CODCLI.ReadOnly = true;
-            this.CODCLI.Width = 80;
-            // 
-            // NOMBRE
-            // 
-            this.NOMBRE.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.NOMBRE.DataPropertyName = "NOMBRE";
-            this.NOMBRE.HeaderText = "Nombre";
-            this.NOMBRE.Name = "NOMBRE";
-            this.NOMBRE.ReadOnly = true;
-            // 
-            // Modulo
-            // 
-            this.Modulo.DataPropertyName = "Modulo";
-            this.Modulo.HeaderText = "Modulo";
-            this.Modulo.Name = "Modulo";
-            this.Modulo.ReadOnly = true;
-            this.Modulo.Width = 50;
-            // 
-            // Descrip
-            // 
-            this.Descrip.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Descrip.DataPropertyName = "Descrip";
-            this.Descrip.HeaderText = "Descripción";
-            this.Descrip.Name = "Descrip";
-            this.Descrip.ReadOnly = true;
             // 
             // frmGrabadoraCD
             // 
@@ -332,10 +291,6 @@ namespace GrabadorNetEstudios
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button btnBuscar;
         private System.Windows.Forms.DataGridView dgDatos;
-        private System.Windows.Forms.DataGridViewTextBoxColumn CODCLI;
-        private System.Windows.Forms.DataGridViewTextBoxColumn NOMBRE;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Modulo;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Descrip;
     }
 }
 

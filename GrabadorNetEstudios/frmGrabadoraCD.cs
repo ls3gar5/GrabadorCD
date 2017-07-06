@@ -28,9 +28,16 @@ namespace GrabadorNetEstudios
             //ME SUSCRIVO A LOS EVENTOS PARA INFORMAR EN EL FORM
             oG.finalizo += new Grabador.Grabador.FinalizoHandler(oG_finalizo);
             oG.progreso += new Grabador.Grabador.ProgresoHandler(oG_progreso);
+            dgDatos.SelectionChanged += DgDatos_SelectionChanged;
 
             SplashStart();
             
+        }
+
+        private void DgDatos_SelectionChanged(object sender, EventArgs e)
+        {
+            var usu = (UsuarioDTO)((DataGridView)sender).CurrentRow.DataBoundItem;
+            SetGrillaModulo(usu);
         }
 
         void SplashStart()
@@ -40,7 +47,7 @@ namespace GrabadorNetEstudios
             
             //Carga de los datos
             currentUsuarios.AddRange(Helper.Usuarios);
-            SetDataSourseGrillaUsuario(currentUsuarios);
+            SetGrillaUsuario(currentUsuarios);
         }
 
         void oG_finalizo(bool lExito)
@@ -125,7 +132,7 @@ namespace GrabadorNetEstudios
 
             try
             {
-                var currenUser = (UsuarioDTO)this.dgDatos.CurrentRow.DataBoundItem;
+                //var currenUser = (UsuarioDTO)this.dgDatos.CurrentRow.DataBoundItem;
 
 
 
@@ -253,7 +260,7 @@ namespace GrabadorNetEstudios
 
             currentUsuarios.AddRange(listaFaltante);
 
-            SetDataSourseGrillaUsuario(currentUsuarios);
+            SetGrillaUsuario(currentUsuarios);
             MessageBox.Show("Se actulizaco la lista. Hay " + currentUsuarios.Count.ToString() + " usuarios nuevos", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -270,38 +277,61 @@ namespace GrabadorNetEstudios
                     return;
                 }
 
-                var modulosUsuario = usu.First().LSISTEM.Split('/').ToList();
-                var modulos = Helper.Modulos.Where(w => modulosUsuario.Contains(w.Modulo)).ToList();
-
-                SetDataSourseGrillaUsuario(usu);
-                SetDataSouerseGrillaModulo(modulos);
+                SetGrillaUsuario(usu);
+                SetGrillaModulo(usu.First());
 
             }
         }
 
-        private void SetDataSourseGrillaUsuario(List<UsuarioDTO> usu)
+        private void SetGrillaModulo(UsuarioDTO usu)
         {
-            dgDatos.DataSource = usu;
-        }
+            var modulosUsuario = usu.LSISTEM.Split('/').ToList();
+            var modulos = Helper.Modulos.Where(w => modulosUsuario.Contains(w.Modulo)).ToList();
 
-        private void SetDataSouerseGrillaModulo(List<ModuloDTO> mod)
-        {
             dgDatosModulos.AutoGenerateColumns = false;
             dgDatosModulos.AllowUserToAddRows = false;
             dgDatosModulos.AllowUserToDeleteRows = false;
             dgDatosModulos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgDatosModulos.DataSource = mod;
+            dgDatosModulos.RowHeadersVisible = false;
             dgDatosModulos.ReadOnly = true;
 
+            dgDatosModulos.DataSource = modulos;
+
+            dgDatosModulos.Columns.Clear();
             dgDatosModulos.Columns.Add("Modulo", "Modulo");
             dgDatosModulos.Columns["Modulo"].DataPropertyName = "Modulo";
-            dgDatosModulos.Columns["Modulo"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgDatosModulos.Columns["Modulo"].Width = 80;
             dgDatosModulos.Columns.Add("Descrip", "Descripción");
             dgDatosModulos.Columns["Descrip"].DataPropertyName = "Descrip";
             dgDatosModulos.Columns["Descrip"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
         }
 
-        
+
+        private void SetGrillaUsuario(List<UsuarioDTO> usu)
+        {
+            dgDatos.AutoGenerateColumns = false;
+            dgDatos.AllowUserToAddRows = false;
+            dgDatos.AllowUserToDeleteRows = false;
+            dgDatos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgDatos.ReadOnly = true;
+            dgDatos.RowHeadersVisible = false;
+
+            dgDatos.DataSource = usu;
+
+            dgDatos.Columns.Clear();
+
+            DataGridViewCheckBoxColumn checkboxColumn = new DataGridViewCheckBoxColumn();
+            checkboxColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            checkboxColumn.DataPropertyName = "SELECCION";
+            checkboxColumn.Width = 20;
+            dgDatos.Columns.Insert(0, checkboxColumn);
+            dgDatos.Columns.Add("CODCLI", "Usuario");
+            dgDatos.Columns["CODCLI"].DataPropertyName = "CODCLI";
+            dgDatos.Columns["CODCLI"].Width = 70;
+            dgDatos.Columns.Add("NOMBRE", "Nombre");
+            dgDatos.Columns["NOMBRE"].DataPropertyName = "NOMBRE";
+            dgDatos.Columns["NOMBRE"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+        }
 
 
         //private void SetGrilla(DataTable datos, DataTable datosu)
