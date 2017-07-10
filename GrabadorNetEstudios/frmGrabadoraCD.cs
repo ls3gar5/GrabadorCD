@@ -14,7 +14,8 @@ namespace GrabadorNetEstudios
     {
         Grabador.Grabador oG;
         string[,] ulista;
-        List<UsuarioDTO> currentUsuarios;
+        List<UsuarioDTO> currentPendienes;
+        List<UsuarioDTO> currentIndividual;
 
 
         public frmGrabadoraCD()
@@ -22,7 +23,8 @@ namespace GrabadorNetEstudios
 
             InitializeComponent();
 
-            currentUsuarios = new List<UsuarioDTO>();
+            currentPendienes = new List<UsuarioDTO>();
+            currentIndividual = new List<UsuarioDTO>();
 
             oG = new Grabador.Grabador();
             //ME SUSCRIVO A LOS EVENTOS PARA INFORMAR EN EL FORM
@@ -46,8 +48,8 @@ namespace GrabadorNetEstudios
             oFrm.ShowDialog();
             
             //Carga de los datos
-            currentUsuarios.AddRange(Helper.Usuarios);
-            SetGrillaUsuario(currentUsuarios);
+            currentPendienes.AddRange(Helper.Usuarios);
+            SetGrillaUsuario(currentPendienes);
         }
 
         void oG_finalizo(bool lExito)
@@ -148,44 +150,6 @@ namespace GrabadorNetEstudios
             }
         }
 
-        private bool verificar()
-        {
-            if (this.cmbGrabadora.SelectedIndex == -1)
-            {
-                MessageBox.Show("Seleccione un dispositivo");
-                return false;
-            }
-
-            if (!oG.ValidarDiscoVacio(this.ulista[this.cmbGrabadora.SelectedIndex, 0]))
-            {
-                MessageBox.Show("No hay CD en blanco!!!!");
-                return false;
-            }
-
-            if (!oG.ValidarCapacidadDisco(this.ulista[this.cmbGrabadora.SelectedIndex, 0]))
-            {
-                MessageBox.Show("No tiene Capacidad el CD!!!!!");
-                return false;
-            }
-
-            //Fija de pruba
-            if (!oG.AgregarCarpeta("C:\\Reportes"))
-            {
-                MessageBox.Show("No existe el direcitorio seleccionado !!!!!");
-                return false;
-            }
-
-            //Fija de pruba
-            if (!oG.AgregarArchivo("C:\\Reportes\\Aviso.rdl"))
-            {
-                MessageBox.Show("No existe el direcitorio seleccionado !!!!!");
-                return false;
-            }
-
-            return true;
-
-        }
-
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -250,7 +214,7 @@ namespace GrabadorNetEstudios
             oFrm.ShowDialog();
 
             //2- La lista de diferencia
-            var listaFaltante = Helper.Usuarios.Where(w => !this.currentUsuarios.Any(c => c.CODCLI == w.CODCLI)).ToList();
+            var listaFaltante = Helper.Usuarios.Where(w => !this.currentPendienes.Any(c => c.CODCLI == w.CODCLI)).ToList();
 
             if (listaFaltante.Count == 0)
             {
@@ -258,10 +222,10 @@ namespace GrabadorNetEstudios
                 return;
             }
 
-            currentUsuarios.AddRange(listaFaltante);
+            currentPendienes.AddRange(listaFaltante);
 
-            SetGrillaUsuario(currentUsuarios);
-            MessageBox.Show("Se actulizaco la lista. Hay " + currentUsuarios.Count.ToString() + " usuarios nuevos", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            SetGrillaUsuario(currentPendienes);
+            MessageBox.Show("Se actulizaco la lista. Hay " + listaFaltante.Count.ToString() + " usuarios nuevos", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void btnBuscar_Click(object sender, EventArgs e)
@@ -270,17 +234,114 @@ namespace GrabadorNetEstudios
             Int32.TryParse(this.textBox1.Text, out nro);
             if (nro > 0)
             {
-                var usu = Helper.SearchUsuario(nro);
-                if (usu.Count == 0)
+                this.currentIndividual = Helper.SearchUsuario(nro);
+                if (this.currentIndividual.Count == 0)
                 {
                     MessageBox.Show("Usuario inexistente", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-
-                SetGrillaUsuario(usu);
-                SetGrillaModulo(usu.First());
+  
+                SetGrillaUsuario(this.currentIndividual);
+                SetGrillaModulo(this.currentIndividual.First());
 
             }
+        }
+
+        private void rbPendientes_CheckedChanged(object sender, EventArgs e)
+        {
+            SetLayOut(true);
+            SetGrillaUsuario(this.currentPendienes);
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            SetLayOut(false);
+        }
+
+
+        private void btnBorrar_Click(object sender, EventArgs e)
+        {
+            this.currentPendienes = this.currentPendienes.Where(w => w.SELECCION == false).ToList();
+
+            SetGrillaUsuario(this.currentPendienes);
+        }
+
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //Para obligar a que sólo se introduzcan números 
+            if (Char.IsDigit(e.KeyChar))
+            {
+                e.Handled = false;
+            }
+            else
+              if (Char.IsControl(e.KeyChar)) //permitir teclas de control como retroceso 
+            {
+                e.Handled = false;
+            }
+            else
+            {
+                //el resto de teclas pulsadas se desactivan 
+                e.Handled = true;
+            }
+        }
+
+        private void SetLayOut(bool value)
+        {
+            if (!value)
+            {
+                this.textBox1.Focus();
+            }
+            else
+            {
+                this.textBox1.Text = string.Empty;
+            }
+
+            this.textBox1.Enabled = value;
+            this.btnBuscar.Enabled = value;
+
+            this.textBox1.Enabled = !value;
+            this.btnBuscar.Enabled = !value;
+            this.btnLoad.Enabled = value;
+            this.btnBorrar.Enabled = value;
+
+        }
+
+        private bool verificar()
+        {
+            if (this.cmbGrabadora.SelectedIndex == -1)
+            {
+                MessageBox.Show("Seleccione un dispositivo");
+                return false;
+            }
+
+            if (!oG.ValidarDiscoVacio(this.ulista[this.cmbGrabadora.SelectedIndex, 0]))
+            {
+                MessageBox.Show("No hay CD en blanco!!!!");
+                return false;
+            }
+
+            if (!oG.ValidarCapacidadDisco(this.ulista[this.cmbGrabadora.SelectedIndex, 0]))
+            {
+                MessageBox.Show("No tiene Capacidad el CD!!!!!");
+                return false;
+            }
+
+            //Fija de pruba
+            if (!oG.AgregarCarpeta("C:\\Reportes"))
+            {
+                MessageBox.Show("No existe el direcitorio seleccionado !!!!!");
+                return false;
+            }
+
+            //Fija de pruba
+            if (!oG.AgregarArchivo("C:\\Reportes\\Aviso.rdl"))
+            {
+                MessageBox.Show("No existe el direcitorio seleccionado !!!!!");
+                return false;
+            }
+
+            return true;
+
         }
 
         private void SetGrillaModulo(UsuarioDTO usu)
@@ -306,14 +367,13 @@ namespace GrabadorNetEstudios
             dgDatosModulos.Columns["Descrip"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
         }
 
-
         private void SetGrillaUsuario(List<UsuarioDTO> usu)
         {
             dgDatos.AutoGenerateColumns = false;
             dgDatos.AllowUserToAddRows = false;
             dgDatos.AllowUserToDeleteRows = false;
             dgDatos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgDatos.ReadOnly = true;
+            //dgDatos.ReadOnly = true;
             dgDatos.RowHeadersVisible = false;
 
             dgDatos.DataSource = usu;
@@ -325,38 +385,18 @@ namespace GrabadorNetEstudios
             checkboxColumn.DataPropertyName = "SELECCION";
             checkboxColumn.Width = 20;
             dgDatos.Columns.Insert(0, checkboxColumn);
+
             dgDatos.Columns.Add("CODCLI", "Usuario");
             dgDatos.Columns["CODCLI"].DataPropertyName = "CODCLI";
             dgDatos.Columns["CODCLI"].Width = 70;
+            dgDatos.Columns["CODCLI"].ReadOnly = true;
             dgDatos.Columns.Add("NOMBRE", "Nombre");
             dgDatos.Columns["NOMBRE"].DataPropertyName = "NOMBRE";
             dgDatos.Columns["NOMBRE"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgDatos.Columns["NOMBRE"].ReadOnly = true;
         }
 
 
-        //private void SetGrilla(DataTable datos, DataTable datosu)
-        //{
-        //    dgDatosModulos.AutoGenerateColumns = false;
-        //    dgDatosModulos.AllowUserToAddRows = false;
-        //    dgDatosModulos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-        //    dgDatosModulos.DataSource = datos.DefaultView;
-        //    dgDatosModulos.Columns.Clear();
-        //    dgDatosModulos.Columns.Add("Modulo", "Modulo");
-        //    dgDatosModulos.Columns["Modulo"].DataPropertyName = "Modulo";
-        //    dgDatosModulos.Columns.Add("Descrip", "Descripción");
-        //    dgDatosModulos.Columns["Descrip"].DataPropertyName = "Descrip";
-
-
-        //    dgDatos.AutoGenerateColumns = false;
-        //    dgDatos.AllowUserToAddRows = false;
-        //    dgDatos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-        //    dgDatos.DataSource = datosu.DefaultView;
-        //    dgDatos.Columns.Clear();
-        //    dgDatos.Columns.Add("CODCLI", "Usuario");
-        //    dgDatos.Columns["CODCLI"].DataPropertyName = "CODCLI";
-        //    dgDatos.Columns.Add("NOMBRE", "Nombre");
-        //    dgDatos.Columns["NOMBRE"].DataPropertyName = "NOMBRE";
-        //}
     }
 }
 

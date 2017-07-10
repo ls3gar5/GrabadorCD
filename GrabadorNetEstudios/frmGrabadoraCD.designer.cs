@@ -47,6 +47,9 @@ namespace GrabadorNetEstudios
             this.dgDatos = new System.Windows.Forms.DataGridView();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.btnBuscar = new System.Windows.Forms.Button();
+            this.rbPendientes = new System.Windows.Forms.RadioButton();
+            this.rbBuscar = new System.Windows.Forms.RadioButton();
+            this.btnBorrar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgDatosModulos)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgDatos)).BeginInit();
             this.SuspendLayout();
@@ -54,7 +57,7 @@ namespace GrabadorNetEstudios
             // btnGrabar
             // 
             this.btnGrabar.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnGrabar.Location = new System.Drawing.Point(561, 428);
+            this.btnGrabar.Location = new System.Drawing.Point(535, 428);
             this.btnGrabar.Name = "btnGrabar";
             this.btnGrabar.Size = new System.Drawing.Size(98, 33);
             this.btnGrabar.TabIndex = 0;
@@ -64,7 +67,7 @@ namespace GrabadorNetEstudios
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(285, 399);
+            this.progressBar1.Location = new System.Drawing.Point(259, 399);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(371, 23);
             this.progressBar1.TabIndex = 1;
@@ -73,7 +76,7 @@ namespace GrabadorNetEstudios
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(285, 369);
+            this.label1.Location = new System.Drawing.Point(259, 369);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(64, 13);
             this.label1.TabIndex = 3;
@@ -83,7 +86,7 @@ namespace GrabadorNetEstudios
             // 
             this.cmbGrabadora.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbGrabadora.FormattingEnabled = true;
-            this.cmbGrabadora.Location = new System.Drawing.Point(285, 309);
+            this.cmbGrabadora.Location = new System.Drawing.Point(259, 309);
             this.cmbGrabadora.Name = "cmbGrabadora";
             this.cmbGrabadora.Size = new System.Drawing.Size(266, 21);
             this.cmbGrabadora.TabIndex = 4;
@@ -93,7 +96,7 @@ namespace GrabadorNetEstudios
             this.label2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
             this.label2.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.SystemColors.Window;
-            this.label2.Location = new System.Drawing.Point(654, 399);
+            this.label2.Location = new System.Drawing.Point(628, 399);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(37, 23);
             this.label2.TabIndex = 5;
@@ -104,7 +107,7 @@ namespace GrabadorNetEstudios
             // 
             this.cmbVelo.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbVelo.FormattingEnabled = true;
-            this.cmbVelo.Location = new System.Drawing.Point(561, 309);
+            this.cmbVelo.Location = new System.Drawing.Point(535, 309);
             this.cmbVelo.Name = "cmbVelo";
             this.cmbVelo.Size = new System.Drawing.Size(97, 21);
             this.cmbVelo.TabIndex = 6;
@@ -112,7 +115,7 @@ namespace GrabadorNetEstudios
             // labelMediaType
             // 
             this.labelMediaType.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelMediaType.Location = new System.Drawing.Point(350, 338);
+            this.labelMediaType.Location = new System.Drawing.Point(324, 338);
             this.labelMediaType.Name = "labelMediaType";
             this.labelMediaType.Size = new System.Drawing.Size(358, 19);
             this.labelMediaType.TabIndex = 14;
@@ -120,7 +123,7 @@ namespace GrabadorNetEstudios
             // 
             // labelTotalSize
             // 
-            this.labelTotalSize.Location = new System.Drawing.Point(558, 338);
+            this.labelTotalSize.Location = new System.Drawing.Point(532, 338);
             this.labelTotalSize.Name = "labelTotalSize";
             this.labelTotalSize.Size = new System.Drawing.Size(55, 13);
             this.labelTotalSize.TabIndex = 12;
@@ -132,7 +135,7 @@ namespace GrabadorNetEstudios
             this.checkBoxQuickFormat.Checked = true;
             this.checkBoxQuickFormat.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxQuickFormat.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBoxQuickFormat.Location = new System.Drawing.Point(285, 465);
+            this.checkBoxQuickFormat.Location = new System.Drawing.Point(259, 465);
             this.checkBoxQuickFormat.Name = "checkBoxQuickFormat";
             this.checkBoxQuickFormat.Size = new System.Drawing.Size(102, 17);
             this.checkBoxQuickFormat.TabIndex = 16;
@@ -142,7 +145,7 @@ namespace GrabadorNetEstudios
             // buttonFormat
             // 
             this.buttonFormat.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonFormat.Location = new System.Drawing.Point(285, 428);
+            this.buttonFormat.Location = new System.Drawing.Point(259, 428);
             this.buttonFormat.Name = "buttonFormat";
             this.buttonFormat.Size = new System.Drawing.Size(88, 29);
             this.buttonFormat.TabIndex = 17;
@@ -152,7 +155,7 @@ namespace GrabadorNetEstudios
             // 
             // btnRefresh
             // 
-            this.btnRefresh.Location = new System.Drawing.Point(285, 333);
+            this.btnRefresh.Location = new System.Drawing.Point(259, 333);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(59, 23);
             this.btnRefresh.TabIndex = 18;
@@ -162,7 +165,7 @@ namespace GrabadorNetEstudios
             // 
             // btnExpulsarCD
             // 
-            this.btnExpulsarCD.Location = new System.Drawing.Point(429, 428);
+            this.btnExpulsarCD.Location = new System.Drawing.Point(403, 428);
             this.btnExpulsarCD.Name = "btnExpulsarCD";
             this.btnExpulsarCD.Size = new System.Drawing.Size(88, 33);
             this.btnExpulsarCD.TabIndex = 19;
@@ -188,9 +191,9 @@ namespace GrabadorNetEstudios
             // btnLoad
             // 
             this.btnLoad.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLoad.Location = new System.Drawing.Point(579, 62);
+            this.btnLoad.Location = new System.Drawing.Point(274, 36);
             this.btnLoad.Name = "btnLoad";
-            this.btnLoad.Size = new System.Drawing.Size(162, 21);
+            this.btnLoad.Size = new System.Drawing.Size(177, 21);
             this.btnLoad.TabIndex = 21;
             this.btnLoad.Text = "Vericar Nuevos Usuarios";
             this.btnLoad.UseVisualStyleBackColor = true;
@@ -205,8 +208,6 @@ namespace GrabadorNetEstudios
             this.dgDatos.Location = new System.Drawing.Point(259, 90);
             this.dgDatos.MultiSelect = false;
             this.dgDatos.Name = "dgDatos";
-            this.dgDatos.ReadOnly = true;
-            this.dgDatos.RowTemplate.ReadOnly = true;
             this.dgDatos.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dgDatos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgDatos.ShowEditingIcon = false;
@@ -215,16 +216,20 @@ namespace GrabadorNetEstudios
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(259, 63);
+            this.textBox1.Enabled = false;
+            this.textBox1.Location = new System.Drawing.Point(523, 39);
+            this.textBox1.MaxLength = 6;
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(100, 21);
             this.textBox1.TabIndex = 23;
             this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.textBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox1_KeyPress);
             // 
             // btnBuscar
             // 
+            this.btnBuscar.Enabled = false;
             this.btnBuscar.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnBuscar.Location = new System.Drawing.Point(365, 62);
+            this.btnBuscar.Location = new System.Drawing.Point(631, 39);
             this.btnBuscar.Name = "btnBuscar";
             this.btnBuscar.Size = new System.Drawing.Size(98, 21);
             this.btnBuscar.TabIndex = 24;
@@ -232,12 +237,50 @@ namespace GrabadorNetEstudios
             this.btnBuscar.UseVisualStyleBackColor = true;
             this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
             // 
+            // rbPendientes
+            // 
+            this.rbPendientes.AutoSize = true;
+            this.rbPendientes.Checked = true;
+            this.rbPendientes.Location = new System.Drawing.Point(274, 16);
+            this.rbPendientes.Name = "rbPendientes";
+            this.rbPendientes.Size = new System.Drawing.Size(87, 17);
+            this.rbPendientes.TabIndex = 25;
+            this.rbPendientes.TabStop = true;
+            this.rbPendientes.Text = "Pendientes";
+            this.rbPendientes.UseVisualStyleBackColor = true;
+            this.rbPendientes.CheckedChanged += new System.EventHandler(this.rbPendientes_CheckedChanged);
+            // 
+            // rbBuscar
+            // 
+            this.rbBuscar.AutoSize = true;
+            this.rbBuscar.Location = new System.Drawing.Point(523, 16);
+            this.rbBuscar.Name = "rbBuscar";
+            this.rbBuscar.Size = new System.Drawing.Size(81, 17);
+            this.rbBuscar.TabIndex = 26;
+            this.rbBuscar.Text = "Individual";
+            this.rbBuscar.UseVisualStyleBackColor = true;
+            this.rbBuscar.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
+            // 
+            // btnBorrar
+            // 
+            this.btnBorrar.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnBorrar.Location = new System.Drawing.Point(274, 63);
+            this.btnBorrar.Name = "btnBorrar";
+            this.btnBorrar.Size = new System.Drawing.Size(177, 21);
+            this.btnBorrar.TabIndex = 27;
+            this.btnBorrar.Text = "Borrar Seleccionados";
+            this.btnBorrar.UseVisualStyleBackColor = true;
+            this.btnBorrar.Click += new System.EventHandler(this.btnBorrar_Click);
+            // 
             // frmGrabadoraCD
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(753, 493);
+            this.ClientSize = new System.Drawing.Size(753, 519);
+            this.Controls.Add(this.btnBorrar);
+            this.Controls.Add(this.rbBuscar);
+            this.Controls.Add(this.rbPendientes);
             this.Controls.Add(this.btnBuscar);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.dgDatos);
@@ -291,6 +334,9 @@ namespace GrabadorNetEstudios
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button btnBuscar;
         private System.Windows.Forms.DataGridView dgDatos;
+        private System.Windows.Forms.RadioButton rbPendientes;
+        private System.Windows.Forms.RadioButton rbBuscar;
+        private System.Windows.Forms.Button btnBorrar;
     }
 }
 

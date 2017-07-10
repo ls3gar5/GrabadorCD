@@ -13,11 +13,6 @@ namespace Datos
 {
     public class GrabadorRepository : DbContext
     {
-        //public GrabadorRepository()
-        //    : base("Name=HolistorCloudDB")
-        //{
-
-        //}
         public GrabadorRepository()
             :base("Name=HERP_DEVEntities")
         {
@@ -26,12 +21,20 @@ namespace Datos
             Configuration.LazyLoadingEnabled = false;
         }
 
-        protected DbSet<UsuarioDTO> UsuarioDTO { get; set; }
-        protected DbSet<ModuloDTO> ModuloDTO { get; set; }
-
-        public List<UsuarioDTO> usuarioDto { get; set; }
-        public List<ModuloDTO> moduloDto { get; set; }
         
+        private List<UsuarioDTO> _usuarioDto = new List<UsuarioDTO>();
+
+        public List<UsuarioDTO> usuarioDto
+        {
+            get { return _usuarioDto; }
+        }
+
+        private List<ModuloDTO> _moduloDto = new List<ModuloDTO>(); 
+
+        public List<ModuloDTO> moduloDto
+        {
+            get { return _moduloDto; }
+        }
 
 
         public List<UsuarioDTO> SearchUsuario(int nroContrato)
@@ -77,13 +80,13 @@ namespace Datos
 
             var reader = cmd.ExecuteReader();
 
-            moduloDto = ((IObjectContextAdapter)this)
+            _moduloDto = ((IObjectContextAdapter)this)
                 .ObjectContext
                 .Translate<ModuloDTO>(reader).ToList();
 
             reader.NextResult();
 
-            usuarioDto = ((IObjectContextAdapter)this)
+            _usuarioDto = ((IObjectContextAdapter)this)
                 .ObjectContext
                 .Translate<UsuarioDTO>(reader).ToList();
 
