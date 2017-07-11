@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using Datos;
 
 namespace Datos
 {
@@ -34,10 +33,19 @@ namespace Datos
         {
             using (var repo = new GrabadorRepository())
             {
-                repo.GetUsuario();
+                try
+                {
+                    repo.GetUsuario();
 
-                _modulos = repo.moduloDto;
-                _usuarios = repo.usuarioDto;
+                    _modulos = repo.moduloDto;
+                    _usuarios = repo.usuarioDto;
+
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                
             }
         }
 
@@ -49,60 +57,145 @@ namespace Datos
             }
         }
 
+        public static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
+        {
+            // Get the subdirectories for the specified directory.
+            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+
+            if (!dir.Exists)
+            {
+                throw new DirectoryNotFoundException(
+                    "El directorio no existe: "
+                    + sourceDirName);
+            }
+
+            DirectoryInfo[] dirs = dir.GetDirectories();
+            // If the destination directory doesn't exist, create it.
+            if (!Directory.Exists(destDirName))
+            {
+                Directory.CreateDirectory(destDirName);
+            }
+
+            // Get the files in the directory and copy them to the new location.
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                string temppath = Path.Combine(destDirName, file.Name);
+                file.CopyTo(temppath, false);
+            }
+
+            // If copying subdirectories, copy them and their contents to new location.
+            if (copySubDirs)
+            {
+                foreach (DirectoryInfo subdir in dirs)
+                {
+                    string temppath = Path.Combine(destDirName, subdir.Name);
+                    DirectoryCopy(subdir.FullName, temppath, copySubDirs);
+                }
+            }
+        }
+
+        public static void DirectoryDelete(string sourceDirName)
+        {
+            // Get the subdirectories for the specified directory.
+            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+
+            if (!dir.Exists)
+            {
+                throw new DirectoryNotFoundException(
+                    "El directorio no existe: "
+                    + sourceDirName);
+            }
+
+            Directory.Delete(sourceDirName, true);
+        }
+
+        private static string GetXMLPath()
+        {
+            var path = Path.Combine(Environment.CurrentDirectory, "config.xml");
+            if (!File.Exists(path))
+            {
+                throw new Exception(ResourcesDatos.ConfigXMLNoExiste);
+            }
+            return path;
+        }
+
+        private static string Getvalue(string param)
+        {
+            var pathXml = GetXMLPath();
+
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(pathXml);
+
+            var lista = xmlDoc.DocumentElement.GetElementsByTagName(param);
+
+            if (lista.Count <= 0)
+            {
+                return "";
+            }
+
+            return lista.Item(0).InnerText;
+        }
+
+        public static string GetStringBD
+        {
+            get
+            {
+                return Getvalue(ResourcesDatos.XMLParamStringConexion);
+            }
+        }
+
+        public static string GetNameSP
+        {
+            get
+            {
+                return Getvalue(ResourcesDatos.XMLParamSP);
+            }
+        }
+
+        public static string GetNameSPSearch
+        {
+            get
+            {
+                return Getvalue(ResourcesDatos.XMLParamSearch);
+            }
+        }
+
+
+        public static string GetPATHEST
+        {
+            get
+            {
+                return Getvalue(ResourcesDatos.XMLParamPATHEST);
+            }
+        }
+        public static string GetPATHAGRO
+        {
+            get
+            {
+                return Getvalue(ResourcesDatos.XMLParamPATHAGRO);
+            }
+        }
+
+        public static string GetPATHGEST
+        {
+            get
+            {
+                return Getvalue(ResourcesDatos.XMLParamPATHGEST);
+            }
+        }
+
+        public static string GetPATHESTLOCAL
+        {
+            get
+            {
+                return Getvalue(ResourcesDatos.XMLParamPATHESTLOCAL);
+            }
+        }
+
         #region SQLCommand
         //public static DataTable dtModulos { get; set; }
         //public static DataTable dtUsuarios { get; set; }
-
-        //private static string GetXMLPath()
-        //{
-        //    var path = Path.Combine(Environment.CurrentDirectory, "config.xml");
-        //    if (!File.Exists(path))
-        //    {
-        //        throw new Exception(Resources.ConfigXMLNoExiste);
-        //    }
-        //    return path;
-        //}
-
-        //private static string Getvalue(string param)
-        //{
-        //    var pathXml = GetXMLPath();
-
-        //    var xmlDoc = new XmlDocument();
-        //    xmlDoc.Load(pathXml);
-
-        //    var lista = xmlDoc.DocumentElement.GetElementsByTagName(param);
-
-        //    if (lista.Count <= 0)
-        //    {
-        //        return "";
-        //    }
-
-        //    return lista.Item(0).InnerText;
-        //}
-
-        //public static string GetStringBD
-        //{
-        //    get
-        //    {
-        //        return Getvalue(Resources.XMLParamStringConexion);
-        //    }
-        //}
-
-        //public static string GetNameSP
-        //{
-        //    get
-        //    {
-        //        return Getvalue(Resources.XMLParamSP);
-        //    }
-        //}
-
-        //public static string GetNameSPSearch
-        //{
-        //    get
-        //    {
-        //        return Getvalue(Resources.XMLParamSearch);
-        //    }
-        //}
 
         //public static void GetDatos()
         //{

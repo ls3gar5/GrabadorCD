@@ -14,7 +14,8 @@ namespace GrabadorNetEstudios
 {
     public partial class frmSplash : Form
     {
-        
+        public string mensajeError { get; set; }
+
         public frmSplash()
         {
             InitializeComponent();
@@ -23,6 +24,7 @@ namespace GrabadorNetEstudios
         public frmSplash(string tituloSplash)
         {
             InitializeComponent();
+            this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork2);
 
             backgroundWorker.RunWorkerAsync();
 
@@ -31,7 +33,6 @@ namespace GrabadorNetEstudios
                 this.lblTitulo.Text = tituloSplash;
             }
 
-            
         }
 
         private void timerSplash_Tick(object sender, EventArgs e)
@@ -46,7 +47,31 @@ namespace GrabadorNetEstudios
 
         private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            Helper.GetUsuario();
+
+            try
+            {
+                Helper.DirectoryCopy(Helper.GetPATHEST, Helper.GetPATHESTLOCAL, true);
+            }
+            catch (Exception ex)
+            {
+                e.Cancel = true;
+                mensajeError += string.IsNullOrEmpty(mensajeError) ?  ex.Message : Environment.NewLine;
+            }
+
+
+        }
+
+        private void backgroundWorker_DoWork2(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                Helper.GetUsuario();
+            }
+            catch (Exception ex)
+            {
+                e.Cancel = true;
+                mensajeError += string.IsNullOrEmpty(mensajeError) ? ex.Message : Environment.NewLine;
+            }
         }
 
         private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -57,8 +82,16 @@ namespace GrabadorNetEstudios
         private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             timerSplash.Stop();
-            pbSplash.Value = 100;
-            Thread.Sleep(3000);
+            if (e.Cancelled == true)
+            {
+                MessageBox.Show(mensajeError, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                pbSplash.Value = 100;
+                Thread.Sleep(3000);
+            }
+
             this.Close();
         }
     }

@@ -46,7 +46,11 @@ namespace GrabadorNetEstudios
         {
             var oFrm = new frmSplash(Resources.TituloInicialSplash);
             oFrm.ShowDialog();
-            
+            if (!string.IsNullOrEmpty(oFrm.mensajeError))
+            {
+                this.Close();
+                return;
+            }
             //Carga de los datos
             currentPendienes.AddRange(Helper.Usuarios);
             SetGrillaUsuario(currentPendienes);
@@ -323,20 +327,6 @@ namespace GrabadorNetEstudios
             if (!oG.ValidarCapacidadDisco(this.ulista[this.cmbGrabadora.SelectedIndex, 0]))
             {
                 MessageBox.Show("No tiene Capacidad el CD!!!!!");
-                return false;
-            }
-
-            //Fija de pruba
-            if (!oG.AgregarCarpeta("C:\\Reportes"))
-            {
-                MessageBox.Show("No existe el direcitorio seleccionado !!!!!");
-                return false;
-            }
-
-            //Fija de pruba
-            if (!oG.AgregarArchivo("C:\\Reportes\\Aviso.rdl"))
-            {
-                MessageBox.Show("No existe el direcitorio seleccionado !!!!!");
                 return false;
             }
 

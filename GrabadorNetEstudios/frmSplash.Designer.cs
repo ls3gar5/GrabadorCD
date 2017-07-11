@@ -37,7 +37,7 @@
             // 
             // pbSplash
             // 
-            this.pbSplash.Location = new System.Drawing.Point(70, 109);
+            this.pbSplash.Location = new System.Drawing.Point(73, 100);
             this.pbSplash.Name = "pbSplash";
             this.pbSplash.Size = new System.Drawing.Size(337, 23);
             this.pbSplash.TabIndex = 0;
@@ -69,11 +69,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(482, 170);
+            this.ClientSize = new System.Drawing.Size(482, 168);
             this.Controls.Add(this.lblTitulo);
             this.Controls.Add(this.pbSplash);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "frmSplash";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "frmSplash";
             this.ResumeLayout(false);
