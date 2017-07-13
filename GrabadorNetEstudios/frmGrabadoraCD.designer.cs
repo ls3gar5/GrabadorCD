@@ -51,14 +51,20 @@ namespace GrabadorNetEstudios
             this.rbPendientes = new System.Windows.Forms.RadioButton();
             this.rbBuscar = new System.Windows.Forms.RadioButton();
             this.btnBorrar = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.txtNombre = new System.Windows.Forms.TextBox();
+            this.txtNroLlave = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgDatosModulos)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgDatos)).BeginInit();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnGrabar
             // 
             this.btnGrabar.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnGrabar.Location = new System.Drawing.Point(535, 428);
+            this.btnGrabar.Location = new System.Drawing.Point(309, 139);
             this.btnGrabar.Name = "btnGrabar";
             this.btnGrabar.Size = new System.Drawing.Size(98, 33);
             this.btnGrabar.TabIndex = 0;
@@ -68,7 +74,7 @@ namespace GrabadorNetEstudios
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(259, 399);
+            this.progressBar1.Location = new System.Drawing.Point(33, 110);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(371, 23);
             this.progressBar1.TabIndex = 1;
@@ -77,7 +83,7 @@ namespace GrabadorNetEstudios
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(259, 369);
+            this.label1.Location = new System.Drawing.Point(33, 80);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(64, 13);
             this.label1.TabIndex = 3;
@@ -87,7 +93,7 @@ namespace GrabadorNetEstudios
             // 
             this.cmbGrabadora.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbGrabadora.FormattingEnabled = true;
-            this.cmbGrabadora.Location = new System.Drawing.Point(259, 309);
+            this.cmbGrabadora.Location = new System.Drawing.Point(33, 20);
             this.cmbGrabadora.Name = "cmbGrabadora";
             this.cmbGrabadora.Size = new System.Drawing.Size(266, 21);
             this.cmbGrabadora.TabIndex = 4;
@@ -97,7 +103,7 @@ namespace GrabadorNetEstudios
             this.label2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
             this.label2.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.SystemColors.Window;
-            this.label2.Location = new System.Drawing.Point(628, 399);
+            this.label2.Location = new System.Drawing.Point(402, 110);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(37, 23);
             this.label2.TabIndex = 5;
@@ -108,7 +114,7 @@ namespace GrabadorNetEstudios
             // 
             this.cmbVelo.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbVelo.FormattingEnabled = true;
-            this.cmbVelo.Location = new System.Drawing.Point(535, 309);
+            this.cmbVelo.Location = new System.Drawing.Point(309, 20);
             this.cmbVelo.Name = "cmbVelo";
             this.cmbVelo.Size = new System.Drawing.Size(97, 21);
             this.cmbVelo.TabIndex = 6;
@@ -116,7 +122,7 @@ namespace GrabadorNetEstudios
             // labelMediaType
             // 
             this.labelMediaType.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelMediaType.Location = new System.Drawing.Point(324, 338);
+            this.labelMediaType.Location = new System.Drawing.Point(98, 49);
             this.labelMediaType.Name = "labelMediaType";
             this.labelMediaType.Size = new System.Drawing.Size(358, 19);
             this.labelMediaType.TabIndex = 14;
@@ -124,7 +130,7 @@ namespace GrabadorNetEstudios
             // 
             // labelTotalSize
             // 
-            this.labelTotalSize.Location = new System.Drawing.Point(532, 338);
+            this.labelTotalSize.Location = new System.Drawing.Point(306, 49);
             this.labelTotalSize.Name = "labelTotalSize";
             this.labelTotalSize.Size = new System.Drawing.Size(55, 13);
             this.labelTotalSize.TabIndex = 12;
@@ -136,7 +142,7 @@ namespace GrabadorNetEstudios
             this.checkBoxQuickFormat.Checked = true;
             this.checkBoxQuickFormat.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxQuickFormat.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBoxQuickFormat.Location = new System.Drawing.Point(259, 465);
+            this.checkBoxQuickFormat.Location = new System.Drawing.Point(33, 176);
             this.checkBoxQuickFormat.Name = "checkBoxQuickFormat";
             this.checkBoxQuickFormat.Size = new System.Drawing.Size(102, 17);
             this.checkBoxQuickFormat.TabIndex = 16;
@@ -146,7 +152,7 @@ namespace GrabadorNetEstudios
             // buttonFormat
             // 
             this.buttonFormat.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonFormat.Location = new System.Drawing.Point(259, 428);
+            this.buttonFormat.Location = new System.Drawing.Point(33, 139);
             this.buttonFormat.Name = "buttonFormat";
             this.buttonFormat.Size = new System.Drawing.Size(88, 29);
             this.buttonFormat.TabIndex = 17;
@@ -156,7 +162,7 @@ namespace GrabadorNetEstudios
             // 
             // btnRefresh
             // 
-            this.btnRefresh.Location = new System.Drawing.Point(259, 333);
+            this.btnRefresh.Location = new System.Drawing.Point(33, 44);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(59, 23);
             this.btnRefresh.TabIndex = 18;
@@ -166,7 +172,7 @@ namespace GrabadorNetEstudios
             // 
             // btnExpulsarCD
             // 
-            this.btnExpulsarCD.Location = new System.Drawing.Point(403, 428);
+            this.btnExpulsarCD.Location = new System.Drawing.Point(177, 139);
             this.btnExpulsarCD.Name = "btnExpulsarCD";
             this.btnExpulsarCD.Size = new System.Drawing.Size(88, 33);
             this.btnExpulsarCD.TabIndex = 19;
@@ -192,7 +198,7 @@ namespace GrabadorNetEstudios
             // btnLoad
             // 
             this.btnLoad.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLoad.Location = new System.Drawing.Point(274, 36);
+            this.btnLoad.Location = new System.Drawing.Point(282, 20);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(177, 21);
             this.btnLoad.TabIndex = 21;
@@ -218,7 +224,7 @@ namespace GrabadorNetEstudios
             // textBox1
             // 
             this.textBox1.Enabled = false;
-            this.textBox1.Location = new System.Drawing.Point(523, 39);
+            this.textBox1.Location = new System.Drawing.Point(124, 53);
             this.textBox1.MaxLength = 6;
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(100, 21);
@@ -230,7 +236,7 @@ namespace GrabadorNetEstudios
             // 
             this.btnBuscar.Enabled = false;
             this.btnBuscar.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnBuscar.Location = new System.Drawing.Point(631, 39);
+            this.btnBuscar.Location = new System.Drawing.Point(230, 53);
             this.btnBuscar.Name = "btnBuscar";
             this.btnBuscar.Size = new System.Drawing.Size(98, 21);
             this.btnBuscar.TabIndex = 24;
@@ -242,7 +248,7 @@ namespace GrabadorNetEstudios
             // 
             this.rbPendientes.AutoSize = true;
             this.rbPendientes.Checked = true;
-            this.rbPendientes.Location = new System.Drawing.Point(274, 16);
+            this.rbPendientes.Location = new System.Drawing.Point(35, 22);
             this.rbPendientes.Name = "rbPendientes";
             this.rbPendientes.Size = new System.Drawing.Size(87, 17);
             this.rbPendientes.TabIndex = 25;
@@ -254,7 +260,7 @@ namespace GrabadorNetEstudios
             // rbBuscar
             // 
             this.rbBuscar.AutoSize = true;
-            this.rbBuscar.Location = new System.Drawing.Point(523, 16);
+            this.rbBuscar.Location = new System.Drawing.Point(35, 55);
             this.rbBuscar.Name = "rbBuscar";
             this.rbBuscar.Size = new System.Drawing.Size(81, 17);
             this.rbBuscar.TabIndex = 26;
@@ -265,13 +271,70 @@ namespace GrabadorNetEstudios
             // btnBorrar
             // 
             this.btnBorrar.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnBorrar.Location = new System.Drawing.Point(274, 63);
+            this.btnBorrar.Location = new System.Drawing.Point(124, 20);
             this.btnBorrar.Name = "btnBorrar";
-            this.btnBorrar.Size = new System.Drawing.Size(177, 21);
+            this.btnBorrar.Size = new System.Drawing.Size(144, 21);
             this.btnBorrar.TabIndex = 27;
             this.btnBorrar.Text = "Borrar Seleccionados";
             this.btnBorrar.UseVisualStyleBackColor = true;
             this.btnBorrar.Click += new System.EventHandler(this.btnBorrar_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.cmbGrabadora);
+            this.groupBox1.Controls.Add(this.btnGrabar);
+            this.groupBox1.Controls.Add(this.progressBar1);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.cmbVelo);
+            this.groupBox1.Controls.Add(this.labelTotalSize);
+            this.groupBox1.Controls.Add(this.labelMediaType);
+            this.groupBox1.Controls.Add(this.checkBoxQuickFormat);
+            this.groupBox1.Controls.Add(this.btnExpulsarCD);
+            this.groupBox1.Controls.Add(this.buttonFormat);
+            this.groupBox1.Controls.Add(this.btnRefresh);
+            this.groupBox1.Location = new System.Drawing.Point(262, 309);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(479, 198);
+            this.groupBox1.TabIndex = 28;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Gradora";
+            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.btnBorrar);
+            this.groupBox2.Controls.Add(this.btnLoad);
+            this.groupBox2.Controls.Add(this.textBox1);
+            this.groupBox2.Controls.Add(this.rbBuscar);
+            this.groupBox2.Controls.Add(this.btnBuscar);
+            this.groupBox2.Controls.Add(this.rbPendientes);
+            this.groupBox2.Location = new System.Drawing.Point(259, 1);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(482, 83);
+            this.groupBox2.TabIndex = 29;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Tareas";
+            // 
+            // txtNombre
+            // 
+            this.txtNombre.Enabled = false;
+            this.txtNombre.Location = new System.Drawing.Point(9, 25);
+            this.txtNombre.MaxLength = 6;
+            this.txtNombre.Name = "txtNombre";
+            this.txtNombre.Size = new System.Drawing.Size(244, 21);
+            this.txtNombre.TabIndex = 30;
+            this.txtNombre.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // txtNroLlave
+            // 
+            this.txtNroLlave.Enabled = false;
+            this.txtNroLlave.Location = new System.Drawing.Point(9, 52);
+            this.txtNroLlave.MaxLength = 6;
+            this.txtNroLlave.Name = "txtNroLlave";
+            this.txtNroLlave.Size = new System.Drawing.Size(100, 21);
+            this.txtNroLlave.TabIndex = 31;
+            this.txtNroLlave.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // frmGrabadoraCD
             // 
@@ -279,26 +342,12 @@ namespace GrabadorNetEstudios
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(753, 519);
-            this.Controls.Add(this.btnBorrar);
-            this.Controls.Add(this.rbBuscar);
-            this.Controls.Add(this.rbPendientes);
-            this.Controls.Add(this.btnBuscar);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.txtNroLlave);
+            this.Controls.Add(this.txtNombre);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.dgDatos);
-            this.Controls.Add(this.btnLoad);
             this.Controls.Add(this.dgDatosModulos);
-            this.Controls.Add(this.btnExpulsarCD);
-            this.Controls.Add(this.btnRefresh);
-            this.Controls.Add(this.buttonFormat);
-            this.Controls.Add(this.checkBoxQuickFormat);
-            this.Controls.Add(this.labelMediaType);
-            this.Controls.Add(this.labelTotalSize);
-            this.Controls.Add(this.cmbVelo);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.cmbGrabadora);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.progressBar1);
-            this.Controls.Add(this.btnGrabar);
             this.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -310,6 +359,10 @@ namespace GrabadorNetEstudios
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgDatosModulos)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgDatos)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -338,6 +391,10 @@ namespace GrabadorNetEstudios
         private System.Windows.Forms.RadioButton rbPendientes;
         private System.Windows.Forms.RadioButton rbBuscar;
         private System.Windows.Forms.Button btnBorrar;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.TextBox txtNombre;
+        private System.Windows.Forms.TextBox txtNroLlave;
     }
 }
 

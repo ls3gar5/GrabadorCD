@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Datos;
 using System.Threading;
-
+using System.IO;
 
 namespace GrabadorNetEstudios
 {
@@ -33,6 +33,13 @@ namespace GrabadorNetEstudios
             dgDatos.SelectionChanged += DgDatos_SelectionChanged;
 
             SplashStart();
+
+            //Carga de los datos
+            if (Helper.Usuarios!= null && Helper.Usuarios.Count>0)
+            {
+                currentPendienes.AddRange(Helper.Usuarios);
+                SetGrillaUsuario(currentPendienes);
+            }
             
         }
 
@@ -46,14 +53,10 @@ namespace GrabadorNetEstudios
         {
             var oFrm = new frmSplash(Resources.TituloInicialSplash);
             oFrm.ShowDialog();
-            if (!string.IsNullOrEmpty(oFrm.mensajeError))
-            {
-                this.Close();
-                return;
-            }
-            //Carga de los datos
-            currentPendienes.AddRange(Helper.Usuarios);
-            SetGrillaUsuario(currentPendienes);
+            //if (!string.IsNullOrEmpty(oFrm.mensajeError))
+            //{
+            //    this.Close();
+            //}
         }
 
         void oG_finalizo(bool lExito)
@@ -140,13 +143,12 @@ namespace GrabadorNetEstudios
             {
                 //var currenUser = (UsuarioDTO)this.dgDatos.CurrentRow.DataBoundItem;
 
-
-
-
-
                 var id = this.ulista[this.cmbGrabadora.SelectedIndex, 0];
                 this.labelMediaType.Text = oG.DatosDisco(id);
-                //oG.Grabar(id);
+
+                AgregarDirectorioFila(Helper.GetPATHESTLOCAL);
+
+                oG.Grabar(id);
             }
             catch (Exception ex)
             {
@@ -154,6 +156,26 @@ namespace GrabadorNetEstudios
             }
         }
 
+        private void AgregarDirectorioFila(string sourceDirName)
+        {
+            // Get the subdirectories for the specified directory.
+            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+            DirectoryInfo[] dirs = dir.GetDirectories();
+
+            // Get the files in the directory and copy them to the new location.
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                oG.AgregarArchivo(file.FullName);
+            }
+            foreach (DirectoryInfo subdir in dirs)
+            {
+                oG.AgregarCarpeta(subdir.FullName);
+                //AgregarDirectorioFila(subdir.FullName);
+            }
+
+
+        }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -222,7 +244,7 @@ namespace GrabadorNetEstudios
 
             if (listaFaltante.Count == 0)
             {
-                MessageBox.Show("No hay usuarios nuevos", "Información", MessageBoxButtons.OK,MessageBoxIcon.Information);
+                MessageBox.Show("No hay usuarios nuevos", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -244,7 +266,7 @@ namespace GrabadorNetEstudios
                     MessageBox.Show("Usuario inexistente", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-  
+
                 SetGrillaUsuario(this.currentIndividual);
                 SetGrillaModulo(this.currentIndividual.First());
 
@@ -331,7 +353,6 @@ namespace GrabadorNetEstudios
             }
 
             return true;
-
         }
 
         private void SetGrillaModulo(UsuarioDTO usu)
@@ -386,7 +407,10 @@ namespace GrabadorNetEstudios
             dgDatos.Columns["NOMBRE"].ReadOnly = true;
         }
 
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
 
+        }
     }
 }
 

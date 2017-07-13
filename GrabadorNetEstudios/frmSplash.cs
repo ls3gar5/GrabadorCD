@@ -50,7 +50,8 @@ namespace GrabadorNetEstudios
 
             try
             {
-                Helper.DirectoryCopy(Helper.GetPATHEST, Helper.GetPATHESTLOCAL, true);
+                //Helper.DirectoryDelete(Helper.GetPATHESTLOCAL);
+                //Helper.DirectoryCopy(Helper.GetPATHEST, Helper.GetPATHESTLOCAL, true);
             }
             catch (Exception ex)
             {
@@ -65,7 +66,7 @@ namespace GrabadorNetEstudios
         {
             try
             {
-                Helper.GetUsuario();
+                //Helper.GetUsuario();
             }
             catch (Exception ex)
             {

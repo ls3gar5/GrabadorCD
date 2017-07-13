@@ -102,9 +102,7 @@ namespace Datos
 
             if (!dir.Exists)
             {
-                throw new DirectoryNotFoundException(
-                    "El directorio no existe: "
-                    + sourceDirName);
+                return;
             }
 
             Directory.Delete(sourceDirName, true);
@@ -161,7 +159,6 @@ namespace Datos
             }
         }
 
-
         public static string GetPATHEST
         {
             get
@@ -169,6 +166,7 @@ namespace Datos
                 return Getvalue(ResourcesDatos.XMLParamPATHEST);
             }
         }
+
         public static string GetPATHAGRO
         {
             get
