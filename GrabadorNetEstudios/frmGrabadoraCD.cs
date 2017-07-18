@@ -5,8 +5,9 @@ using System.Data;
 using System.Collections.Generic;
 using System.Linq;
 using Datos;
-using System.Threading;
+using System.Threading.Tasks;
 using System.IO;
+using System.ComponentModel;
 
 namespace GrabadorNetEstudios
 {
@@ -16,7 +17,7 @@ namespace GrabadorNetEstudios
         string[,] ulista;
         List<UsuarioDTO> currentPendienes;
         List<UsuarioDTO> currentIndividual;
-
+       
 
         public frmGrabadoraCD()
         {
@@ -30,23 +31,33 @@ namespace GrabadorNetEstudios
             //ME SUSCRIVO A LOS EVENTOS PARA INFORMAR EN EL FORM
             oG.finalizo += new Grabador.Grabador.FinalizoHandler(oG_finalizo);
             oG.progreso += new Grabador.Grabador.ProgresoHandler(oG_progreso);
+
             dgDatos.SelectionChanged += DgDatos_SelectionChanged;
 
             SplashStart();
 
             //Carga de los datos
-            if (Helper.Usuarios!= null && Helper.Usuarios.Count>0)
+            if (Helper.Usuarios != null && Helper.Usuarios.Count > 0)
             {
                 currentPendienes.AddRange(Helper.Usuarios);
                 SetGrillaUsuario(currentPendienes);
             }
-            
+
         }
+
 
         private void DgDatos_SelectionChanged(object sender, EventArgs e)
         {
-            var usu = (UsuarioDTO)((DataGridView)sender).CurrentRow.DataBoundItem;
-            SetGrillaModulo(usu);
+            try
+            {
+                var usu = (UsuarioDTO)((DataGridView)sender).CurrentRow.DataBoundItem;
+                SetGrillaModulo(usu);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         void SplashStart()
@@ -64,9 +75,19 @@ namespace GrabadorNetEstudios
             if (lExito == true)
             {
                 MessageBox.Show(Resources.ProcesoFinalizado);
+
+                lblProceso.Text = string.Empty;
+                this.label2.Text = string.Empty;
+                progressBar1.Value = 0;
+
+                GrabarCD();
+
+
             }
             else
+            {
                 MessageBox.Show(Resources.ErrorProceso);
+            }
         }
 
         void oG_progreso(int porcentaje, string tarea)
@@ -78,7 +99,7 @@ namespace GrabadorNetEstudios
             }
             else if (tarea.Trim() != string.Empty)
             {
-                label1.Text = tarea;
+                lblProceso.Text = tarea;
                 this.label2.Text = porcentaje.ToString();
                 progressBar1.Value = porcentaje;
             }
@@ -124,6 +145,8 @@ namespace GrabadorNetEstudios
 
                 this.labelMediaType.Text = oG.DatosDisco(id);
 
+                AgregarDirectorioFila(Helper.GetPATHESTLOCAL);
+
             }
             catch (Exception ex)
             {
@@ -132,28 +155,11 @@ namespace GrabadorNetEstudios
             }
         }
 
+
+
         private void btnGrabar_Click(object sender, EventArgs e)
         {
-            if (!this.verificar())
-            {
-                return;
-            }
-
-            try
-            {
-                //var currenUser = (UsuarioDTO)this.dgDatos.CurrentRow.DataBoundItem;
-
-                var id = this.ulista[this.cmbGrabadora.SelectedIndex, 0];
-                this.labelMediaType.Text = oG.DatosDisco(id);
-
-                AgregarDirectorioFila(Helper.GetPATHESTLOCAL);
-
-                oG.Grabar(id);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            GrabarCD();
         }
 
         private void AgregarDirectorioFila(string sourceDirName)
@@ -171,15 +177,11 @@ namespace GrabadorNetEstudios
             foreach (DirectoryInfo subdir in dirs)
             {
                 oG.AgregarCarpeta(subdir.FullName);
-                //AgregarDirectorioFila(subdir.FullName);
             }
-
-
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-
             //
             // Release the disc recorder items
             //
@@ -267,23 +269,29 @@ namespace GrabadorNetEstudios
                     return;
                 }
 
-                SetGrillaUsuario(this.currentIndividual);
-                SetGrillaModulo(this.currentIndividual.First());
+                try
+                {
+                    SetGrillaUsuario(this.currentIndividual);
+                    SetGrillaModulo(this.currentIndividual.First());
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
 
             }
         }
 
         private void rbPendientes_CheckedChanged(object sender, EventArgs e)
         {
-            SetLayOut(true);
+            SetLayOutBotton(true);
             SetGrillaUsuario(this.currentPendienes);
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
-            SetLayOut(false);
+            SetLayOutBotton(false);
         }
-
 
         private void btnBorrar_Click(object sender, EventArgs e)
         {
@@ -311,7 +319,7 @@ namespace GrabadorNetEstudios
             }
         }
 
-        private void SetLayOut(bool value)
+        private void SetLayOutBotton(bool value)
         {
             if (!value)
             {
@@ -330,6 +338,72 @@ namespace GrabadorNetEstudios
             this.btnLoad.Enabled = value;
             this.btnBorrar.Enabled = value;
 
+        }
+
+
+        private void GrabarCD()
+        {
+            UsuarioDTO currentUser = new UsuarioDTO();
+
+            try
+            {
+
+                if (!this.verificar())
+                {
+                    return;
+                }
+
+
+                if (rbPendientes.Checked)
+                {
+                    currentUser = this.currentPendienes.Where(w => !w.FECHACT.HasValue).OrderBy(o => o.CODCLI).FirstOrDefault();
+                }
+                else
+                {
+                    currentUser = this.currentIndividual.Where(w => !w.FECHACT.HasValue).OrderBy(o => o.CODCLI).FirstOrDefault();
+                }
+
+                if (currentUser == null)
+                {
+                    throw new Exception("Finalizo el proceso de grbación");
+                }
+
+                currentUser.FECHACT = DateTime.Now;
+
+                var id = this.ulista[this.cmbGrabadora.SelectedIndex, 0];
+                this.labelMediaType.Text = oG.DatosDisco(id);
+
+                var sourceDirName = string.Concat(Helper.GetPATHESTLOCAL, "Holiwin\\");
+
+                //Verifico que no existan en el fuente un Holiwin anterior
+                DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+                FileInfo[] files = dir.GetFiles();
+
+                foreach (FileInfo file in files)
+                {
+                    File.Delete(file.FullName);
+                }
+
+                dir = new DirectoryInfo(sourceDirName);
+                oG.ElinimarCarpeta(sourceDirName);
+
+                Directory.CreateDirectory(sourceDirName);
+                //Genero el txt
+                var pathHoliwin = string.Concat(sourceDirName, "HOLIWIN.SYS");
+                var pathUsu = string.Concat(sourceDirName, currentUser.CODCLI + ".txt");
+                File.WriteAllText(pathHoliwin, currentUser.MPRTWIN);
+                File.WriteAllText(pathUsu, string.Empty);
+
+                oG.AgregarCarpeta(sourceDirName);
+
+                oG.Grabar(id);
+
+            }
+            catch (Exception ex)
+            {
+                currentUser.FECHACT = DateTime.Now;
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private bool verificar()
@@ -357,6 +431,11 @@ namespace GrabadorNetEstudios
 
         private void SetGrillaModulo(UsuarioDTO usu)
         {
+            if (Helper.Modulos == null || Helper.Modulos.Count == 0)
+            {
+                throw new Exception(Resources.ErrorNoExisteTablaModulo);
+            }
+
             var modulosUsuario = usu.LSISTEM.Split('/').ToList();
             var modulos = Helper.Modulos.Where(w => modulosUsuario.Contains(w.Modulo)).ToList();
 
@@ -405,11 +484,6 @@ namespace GrabadorNetEstudios
             dgDatos.Columns["NOMBRE"].DataPropertyName = "NOMBRE";
             dgDatos.Columns["NOMBRE"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgDatos.Columns["NOMBRE"].ReadOnly = true;
-        }
-
-        private void groupBox1_Enter(object sender, EventArgs e)
-        {
-
         }
     }
 }

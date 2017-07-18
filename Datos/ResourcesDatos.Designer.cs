@@ -97,24 +97,6 @@ namespace Datos {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Carga de datos iniciales. Aguarde....
-        /// </summary>
-        internal static string TituloInicialSplash {
-            get {
-                return ResourceManager.GetString("TituloInicialSplash", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Verificando nuevos datos. Aguarde....
-        /// </summary>
-        internal static string TituloVerificandoSplash {
-            get {
-                return ResourceManager.GetString("TituloVerificandoSplash", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to PATHAGRO.
         /// </summary>
         internal static string XMLParamPATHAGRO {

@@ -70,6 +70,15 @@ namespace GrabadorNetEstudios {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No tiene la tabla Modulos Cargada.
+        /// </summary>
+        internal static string ErrorNoExisteTablaModulo {
+            get {
+                return ResourceManager.GetString("ErrorNoExisteTablaModulo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error en el proceso.
         /// </summary>
         internal static string ErrorProceso {

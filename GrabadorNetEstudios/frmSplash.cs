@@ -19,12 +19,17 @@ namespace GrabadorNetEstudios
         public frmSplash()
         {
             InitializeComponent();
+
+           
         }
 
         public frmSplash(string tituloSplash)
         {
             InitializeComponent();
-            this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork2);
+
+            backgroundWorker.WorkerReportsProgress = true;
+            backgroundWorker.WorkerSupportsCancellation = true;
+            backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork2);
 
             backgroundWorker.RunWorkerAsync();
 
@@ -50,8 +55,8 @@ namespace GrabadorNetEstudios
 
             try
             {
-                //Helper.DirectoryDelete(Helper.GetPATHESTLOCAL);
-                //Helper.DirectoryCopy(Helper.GetPATHEST, Helper.GetPATHESTLOCAL, true);
+                Helper.DirectoryDelete(Helper.GetPATHESTLOCAL);
+                Helper.DirectoryCopy(Helper.GetPATHEST, Helper.GetPATHESTLOCAL, true);
             }
             catch (Exception ex)
             {
@@ -66,7 +71,7 @@ namespace GrabadorNetEstudios
         {
             try
             {
-                //Helper.GetUsuario();
+                Helper.GetUsuario();
             }
             catch (Exception ex)
             {

@@ -156,4 +156,7 @@
   <data name="TituloVerificandoSplash" xml:space="preserve">
     <value>Verificando nuevos datos. Aguarde...</value>
   </data>
+  <data name="ErrorNoExisteTablaModulo" xml:space="preserve">
+    <value>No tiene la tabla Modulos Cargada</value>
+  </data>
 </root>

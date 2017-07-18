@@ -150,10 +150,4 @@
   <data name="XMLParamStringConexion" xml:space="preserve">
     <value>cStrCon</value>
   </data>
-  <data name="TituloInicialSplash" xml:space="preserve">
-    <value>Carga de datos iniciales. Aguarde...</value>
-  </data>
-  <data name="TituloVerificandoSplash" xml:space="preserve">
-    <value>Verificando nuevos datos. Aguarde...</value>
-  </data>
 </root>
