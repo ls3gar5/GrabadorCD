@@ -1,11 +1,11 @@
 <?xml version = "1.0" encoding="Windows-1252" standalone="yes"?>
 <Data>
-    <cStrCon>Data Source=192.168.9.38;Initial Catalog=HERP_DEV;Integrated Security=False;User ID=holistor; password=H0listor.0;</cStrCon>
+    <cStrCon>Data Source=192.168.13.72;Initial Catalog=HERP_DEV;Integrated Security=False;User ID=sa; password=H0list0r;</cStrCon>
     <cStoreProcedure>sp_Suite2HBM</cStoreProcedure>
     <cSPSearch>sp_Suite2HBMSearch</cSPSearch>
-    <PATHEST>\\192.168.9.16\Puente\Leonardo\Holistor</PATHEST>
-    <PATHAGRO>P:\Leonardo\AGRO\</PATHAGRO>
-    <PATHGEST>P:\Leonardo\GESTION\</PATHGEST>
+    <PATHEST>\\192.168.9.16\Puente\Leonardo\Holistor\</PATHEST>
+    <PATHAGRO>\\192.168.9.16\Puente\Leonardo\AGRO\</PATHAGRO>
+    <PATHGEST>\\192.168.9.16\Puente\Leonardo\GESTION\</PATHGEST>
     <PATHESTLOCAL>C:\Preparacion\</PATHESTLOCAL>
     <lActiva>TRUE</lActiva>
 </Data>

@@ -112,6 +112,10 @@
       <Project>{63b6f6b4-ea88-4a17-ac9f-eb8b8915b3b4}</Project>
       <Name>Datos</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Holistor.Proteccion\Holistor.Proteccion.csproj">
+      <Project>{42f016d2-dba5-4f57-b4f8-eefc6bfa826d}</Project>
+      <Name>Holistor.Proteccion</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icons\app.ico" />

@@ -20,7 +20,7 @@ namespace GrabadorNetEstudios
         {
             InitializeComponent();
 
-           
+            mensajeError = string.Empty;
         }
 
         public frmSplash(string tituloSplash)
@@ -61,10 +61,8 @@ namespace GrabadorNetEstudios
             catch (Exception ex)
             {
                 e.Cancel = true;
-                mensajeError += string.IsNullOrEmpty(mensajeError) ?  ex.Message : Environment.NewLine;
+                mensajeError += string.IsNullOrEmpty(mensajeError) ? "-Error Master:" + ex.Message : Environment.NewLine + Environment.NewLine + "-Error Master:" + ex.Message;
             }
-
-
         }
 
         private void backgroundWorker_DoWork2(object sender, DoWorkEventArgs e)
@@ -76,7 +74,7 @@ namespace GrabadorNetEstudios
             catch (Exception ex)
             {
                 e.Cancel = true;
-                mensajeError += string.IsNullOrEmpty(mensajeError) ? ex.Message : Environment.NewLine;
+                mensajeError += string.IsNullOrEmpty(mensajeError) ? "-Error Servidor Sql: " + ex.Message : Environment.NewLine + Environment.NewLine + "-Error Servidor Sql: " + ex.Message;
             }
         }
 
@@ -88,6 +86,7 @@ namespace GrabadorNetEstudios
         private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             timerSplash.Stop();
+
             if (e.Cancelled == true)
             {
                 MessageBox.Show(mensajeError, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

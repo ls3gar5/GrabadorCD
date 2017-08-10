@@ -8,6 +8,7 @@ using Datos;
 using System.Threading.Tasks;
 using System.IO;
 using System.ComponentModel;
+using Holistor.Proteccion;
 
 namespace GrabadorNetEstudios
 {
@@ -17,7 +18,13 @@ namespace GrabadorNetEstudios
         string[,] ulista;
         List<UsuarioDTO> currentPendienes;
         List<UsuarioDTO> currentIndividual;
-       
+
+        FileSystemWatcher m_Watcher;
+        public delegate void AddText(string text);
+        public AddText addTextToLabel;
+
+        private const string mensajeArchivo = "Hubo cambios en el master del Servidor. Verifique";
+
 
         public frmGrabadoraCD()
         {
@@ -28,7 +35,6 @@ namespace GrabadorNetEstudios
             currentIndividual = new List<UsuarioDTO>();
 
             oG = new Grabador.Grabador();
-            //ME SUSCRIVO A LOS EVENTOS PARA INFORMAR EN EL FORM
             oG.finalizo += new Grabador.Grabador.FinalizoHandler(oG_finalizo);
             oG.progreso += new Grabador.Grabador.ProgresoHandler(oG_progreso);
 
@@ -39,12 +45,72 @@ namespace GrabadorNetEstudios
             //Carga de los datos
             if (Helper.Usuarios != null && Helper.Usuarios.Count > 0)
             {
-                currentPendienes.AddRange(Helper.Usuarios);
+                currentPendienes.AddRange(Helper.Usuarios.OrderBy(o => o.CODCLI));
                 SetGrillaUsuario(currentPendienes);
             }
 
+            m_Watcher = new FileSystemWatcher(Helper.GetPATHEST);
+            m_Watcher.Filter = "*.*";
+            m_Watcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite;
+            m_Watcher.IncludeSubdirectories = true;
+            m_Watcher.EnableRaisingEvents = true;
+
+            m_Watcher.Changed += M_Watcher_Changed;
+            m_Watcher.Deleted += M_Watcher_Deleted;
+            m_Watcher.Created += M_Watcher_Created;
+            m_Watcher.Renamed += M_Watcher_Renamed;
+
+            addTextToLabel = new AddText(AddTextToLabelMethod);
         }
 
+        private void AddTextToLabelMethod(string text)
+        {
+            this.lblProceso.Text = text;
+        }
+
+
+        private void M_Watcher_Renamed(object sender, RenamedEventArgs e)
+        {
+            m_Watcher.EnableRaisingEvents = false;
+            this.lblProceso.Text += mensajeArchivo;
+            MessageBox.Show(mensajeArchivo, "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void M_Watcher_Created(object sender, FileSystemEventArgs e)
+        {
+            m_Watcher.EnableRaisingEvents = false;
+
+            if (lblProceso.InvokeRequired)
+                lblProceso.Invoke(addTextToLabel, new object[] { mensajeArchivo });
+            else
+                lblProceso.Text = mensajeArchivo;
+
+            MessageBox.Show(mensajeArchivo, "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void M_Watcher_Deleted(object sender, FileSystemEventArgs e)
+        {
+            m_Watcher.EnableRaisingEvents = false;
+
+            if (lblProceso.InvokeRequired)
+                lblProceso.Invoke(addTextToLabel, new object[] { mensajeArchivo });
+            else
+                lblProceso.Text = mensajeArchivo;
+
+            MessageBox.Show(mensajeArchivo, "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void M_Watcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            m_Watcher.EnableRaisingEvents = false;
+
+            if (lblProceso.InvokeRequired)
+                lblProceso.Invoke(addTextToLabel, new object[] { mensajeArchivo });
+            else
+                lblProceso.Text = mensajeArchivo;
+
+            MessageBox.Show(mensajeArchivo, "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
 
         private void DgDatos_SelectionChanged(object sender, EventArgs e)
         {
@@ -52,7 +118,6 @@ namespace GrabadorNetEstudios
             {
                 var usu = (UsuarioDTO)((DataGridView)sender).CurrentRow.DataBoundItem;
                 SetGrillaModulo(usu);
-
             }
             catch (Exception ex)
             {
@@ -64,24 +129,36 @@ namespace GrabadorNetEstudios
         {
             var oFrm = new frmSplash(Resources.TituloInicialSplash);
             oFrm.ShowDialog();
-            //if (!string.IsNullOrEmpty(oFrm.mensajeError))
-            //{
-            //    this.Close();
-            //}
         }
 
         void oG_finalizo(bool lExito)
         {
+            SetBottonsEnabled(true);
+            m_Watcher.EnableRaisingEvents = true;
+
             if (lExito == true)
             {
-                MessageBox.Show(Resources.ProcesoFinalizado);
-
                 lblProceso.Text = string.Empty;
                 this.label2.Text = string.Empty;
                 progressBar1.Value = 0;
 
-                GrabarCD();
+                var lista = this.currentPendienes.Where(w => !w.FECHACT.HasValue).OrderBy(o => o.CODCLI).ToList();
 
+                if (lista.Count > 1)
+                {
+                    SetGrillaUsuario(lista);
+
+                    MessageBox.Show(Resources.ProcesoFinalizado, "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    if (MessageBox.Show("¿Continúa con el siguiente suscripción?", "Información", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                    {
+                        GrabarCD();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("No hay mas Ususarios para grabar", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
 
             }
             else
@@ -127,21 +204,21 @@ namespace GrabadorNetEstudios
                 this.cmbGrabadora.SelectedIndex = 0;
                 var id = this.ulista[this.cmbGrabadora.SelectedIndex, 0];
 
-                try
-                {
-                    var velocidades = this.oG.GetWriteSpeed(id);
+                //try
+                //{
+                //    var velocidades = this.oG.GetWriteSpeed(id);
 
-                    for (int i = 0; i < velocidades.GetLength(0); i++)
-                    {
-                        this.cmbVelo.Items.Insert(i, velocidades[i]);
-                    }
+                //    for (int i = 0; i < velocidades.GetLength(0); i++)
+                //    {
+                //        this.cmbVelo.Items.Insert(i, velocidades[i]);
+                //    }
 
-                    this.cmbVelo.SelectedIndex = 0;
-                }
-                catch
-                {
-                    cmbVelo.Enabled = false;
-                }
+                //    this.cmbVelo.SelectedIndex = 0;
+                //}
+                //catch
+                //{
+                //    cmbVelo.Enabled = false;
+                //}
 
                 this.labelMediaType.Text = oG.DatosDisco(id);
 
@@ -151,14 +228,13 @@ namespace GrabadorNetEstudios
             catch (Exception ex)
             {
 
-                MessageBox.Show(ex.Message, "Error");
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-
-
         private void btnGrabar_Click(object sender, EventArgs e)
         {
+            m_Watcher.EnableRaisingEvents = false;
             GrabarCD();
         }
 
@@ -330,13 +406,33 @@ namespace GrabadorNetEstudios
                 this.textBox1.Text = string.Empty;
             }
 
-            this.textBox1.Enabled = value;
-            this.btnBuscar.Enabled = value;
-
             this.textBox1.Enabled = !value;
             this.btnBuscar.Enabled = !value;
             this.btnLoad.Enabled = value;
             this.btnBorrar.Enabled = value;
+        }
+
+        private void SetBottonsEnabled(bool v)
+        {
+
+            this.textBox1.Enabled = v;
+            this.btnBuscar.Enabled = v;
+            this.btnLoad.Enabled = v;
+            this.btnBorrar.Enabled = v;
+            this.rbBuscar.Enabled = v;
+            this.rbPendientes.Enabled = v;
+
+            this.cmbGrabadora.Enabled = v;
+            this.btnRefresh.Enabled = v;
+            this.buttonFormat.Enabled = v;
+            this.checkBoxQuickFormat.Enabled = v;
+            this.btnExpulsarCD.Enabled = v;
+            this.btnGrabar.Enabled = v;
+            this.btnVerificarLlave.Enabled = v;
+
+            this.dgDatos.Enabled = v;
+            this.dgDatosModulos.Enabled = v;
+
 
         }
 
@@ -347,12 +443,13 @@ namespace GrabadorNetEstudios
 
             try
             {
+                SetBottonsEnabled(false);
 
                 if (!this.verificar())
                 {
+                    SetBottonsEnabled(true);
                     return;
                 }
-
 
                 if (rbPendientes.Checked)
                 {
@@ -365,26 +462,24 @@ namespace GrabadorNetEstudios
 
                 if (currentUser == null)
                 {
-                    throw new Exception("Finalizo el proceso de grbación");
+                    throw new ArgumentNullException(Resources.ProcesoFinalizado);
                 }
+                else
+                {
+                    this.txtNombre.Text = currentUser.NOMBRE;
+                    this.txtNroLlave.Text = currentUser.CHLOCK;
+                    SetGrillaModulo(currentUser);
 
-                currentUser.FECHACT = DateTime.Now;
+                    currentUser.FECHACT = DateTime.Now;
+                }
 
                 var id = this.ulista[this.cmbGrabadora.SelectedIndex, 0];
                 this.labelMediaType.Text = oG.DatosDisco(id);
 
                 var sourceDirName = string.Concat(Helper.GetPATHESTLOCAL, "Holiwin\\");
 
-                //Verifico que no existan en el fuente un Holiwin anterior
-                DirectoryInfo dir = new DirectoryInfo(sourceDirName);
-                FileInfo[] files = dir.GetFiles();
-
-                foreach (FileInfo file in files)
-                {
-                    File.Delete(file.FullName);
-                }
-
-                dir = new DirectoryInfo(sourceDirName);
+                Directory.Delete(sourceDirName, true);
+                //Elimino de la collecion de grabacion
                 oG.ElinimarCarpeta(sourceDirName);
 
                 Directory.CreateDirectory(sourceDirName);
@@ -394,15 +489,27 @@ namespace GrabadorNetEstudios
                 File.WriteAllText(pathHoliwin, currentUser.MPRTWIN);
                 File.WriteAllText(pathUsu, string.Empty);
 
-                oG.AgregarCarpeta(sourceDirName);
-
-                oG.Grabar(id);
-
+                //Agrego de la collecion de grabacion
+                if (oG.AgregarCarpeta(sourceDirName))
+                {
+                    oG.Grabar(id);
+                }
+                else
+                {
+                    MessageBox.Show("No se pudo grabar el Holiwin verifique las carpetas:" + sourceDirName, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    SetBottonsEnabled(true);
+                }
+            }
+            catch (ArgumentNullException aex)
+            {
+                MessageBox.Show(aex.Message);
+                SetBottonsEnabled(true);
             }
             catch (Exception ex)
             {
                 currentUser.FECHACT = DateTime.Now;
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                SetBottonsEnabled(true);
             }
         }
 
@@ -410,19 +517,22 @@ namespace GrabadorNetEstudios
         {
             if (this.cmbGrabadora.SelectedIndex == -1)
             {
-                MessageBox.Show("Seleccione un dispositivo");
+                MessageBox.Show("Seleccione un dispositivo", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
 
             if (!oG.ValidarDiscoVacio(this.ulista[this.cmbGrabadora.SelectedIndex, 0]))
             {
-                MessageBox.Show("No hay CD en blanco!!!!");
+                MessageBox.Show("Verifique los siguientes posibles problemas:" + Environment.NewLine +
+                    "- El CD ya se encuentra utilizado." + Environment.NewLine +
+                    "- No se encuentra ningún CD disponible en la Grabadora." + Environment.NewLine +
+                    "- El dispositivo no es grabadora de CD.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
 
             if (!oG.ValidarCapacidadDisco(this.ulista[this.cmbGrabadora.SelectedIndex, 0]))
             {
-                MessageBox.Show("No tiene Capacidad el CD!!!!!");
+                MessageBox.Show("El directorio seleccionado tiene un tamaño superior a la capacidad de grabación del CD", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
 
@@ -470,20 +580,65 @@ namespace GrabadorNetEstudios
 
             dgDatos.Columns.Clear();
 
-            DataGridViewCheckBoxColumn checkboxColumn = new DataGridViewCheckBoxColumn();
-            checkboxColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            checkboxColumn.DataPropertyName = "SELECCION";
-            checkboxColumn.Width = 20;
+            DataGridViewCheckBoxColumn checkboxColumn = new DataGridViewCheckBoxColumn()
+            {
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleCenter },
+                DataPropertyName = "SELECCION",
+                Width = 20
+            };
+
             dgDatos.Columns.Insert(0, checkboxColumn);
+
+            DataGridViewTextBoxColumn columnLLave = new DataGridViewTextBoxColumn()
+            {
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleCenter },
+                DataPropertyName = "LLAVE",
+                Width = 30,
+                ReadOnly = true,
+                HeaderText = "LLAVE"
+            };
+
+            dgDatos.Columns.Insert(1, columnLLave);
 
             dgDatos.Columns.Add("CODCLI", "Usuario");
             dgDatos.Columns["CODCLI"].DataPropertyName = "CODCLI";
             dgDatos.Columns["CODCLI"].Width = 70;
             dgDatos.Columns["CODCLI"].ReadOnly = true;
+
             dgDatos.Columns.Add("NOMBRE", "Nombre");
             dgDatos.Columns["NOMBRE"].DataPropertyName = "NOMBRE";
             dgDatos.Columns["NOMBRE"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgDatos.Columns["NOMBRE"].ReadOnly = true;
+
+
+        }
+
+        private void btnVerificarLlave_Click(object sender, EventArgs e)
+        {
+            var usu = (UsuarioDTO)this.dgDatos.CurrentRow.DataBoundItem;
+            
+            this.txtLLaveSuscripcion.Text = usu.CHLOCK;
+
+            var llaveHoliwin = usu.MPRTWIN.Split(new[] { '\r', '\n' }).FirstOrDefault();
+            llaveHoliwin = llaveHoliwin.Substring(llaveHoliwin.IndexOf('[') + 1, llaveHoliwin.IndexOf(']') - llaveHoliwin.IndexOf('[') - 1);
+            this.txtLLaveHoliwin.Text = llaveHoliwin;
+
+            HKEY oHKey = new HKEY();
+            Result oResult = oHKey.testHkey();
+
+            if (oResult.lConectado)
+            {
+                this.txtLLaveUsb.Text = oResult.LoteSerie;
+            }
+            else
+            {
+                this.txtLLaveUsb.Text = "No hay llave conectada. Verifique";
+            }
+
+
+
+            this.dgDatos.Refresh();
+
         }
     }
 }

@@ -18,6 +18,7 @@ namespace Datos
         public string MPRTWIN { get; set; }
         public bool SELECCION { get; set; }
         public int? IDDESITEM { get; set; }
+        public string LLAVE { get; set; }
     }
 
 }
