@@ -70,6 +70,16 @@ namespace GrabadorNetEstudios {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Error {
+            get {
+                object obj = ResourceManager.GetObject("Error", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No tiene la tabla Modulos Cargada.
         /// </summary>
         internal static string ErrorNoExisteTablaModulo {
@@ -84,6 +94,16 @@ namespace GrabadorNetEstudios {
         internal static string ErrorProceso {
             get {
                 return ResourceManager.GetString("ErrorProceso", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap OkIcon {
+            get {
+                object obj = ResourceManager.GetObject("OkIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

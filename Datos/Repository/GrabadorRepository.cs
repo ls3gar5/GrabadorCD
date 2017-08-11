@@ -37,7 +37,7 @@ namespace Datos
         }
 
 
-        public List<UsuarioDTO> SearchUsuario(int nroContrato)
+        public UsuarioDTO SearchUsuario(int nroContrato)
         {
             var parameterList = new List<SqlParameter>();
 
@@ -53,7 +53,7 @@ namespace Datos
 
             var spExecute = "[dbo].[sp_Suite2HBMSearch]" + String.Join(",", parameterList.Select(s => String.Format("@{0}", s.ParameterName)));
 
-            var result = this.Database.SqlQuery<UsuarioDTO>(spExecute, parameterList.ToArray()).ToList();
+            var result = this.Database.SqlQuery<UsuarioDTO>(spExecute, parameterList.ToArray()).FirstOrDefault();
 
             if (isConnManuallyOpen && Database.Connection.State != ConnectionState.Closed)
             {

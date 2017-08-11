@@ -16,7 +16,18 @@ namespace GrabadorNetEstudios
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmGrabadoraCD());
+            try
+            {
+                Application.Run(new frmGrabadoraCD());
+            }catch (IndexOutOfRangeException ex)
+            {
+                var mensa = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                var mensa = ex.Message;
+            }
+            
         }
     }
 }

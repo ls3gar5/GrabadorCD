@@ -39,13 +39,32 @@ namespace GrabadorNetEstudios
             oG.progreso += new Grabador.Grabador.ProgresoHandler(oG_progreso);
 
             dgDatos.SelectionChanged += DgDatos_SelectionChanged;
-
+            
             SplashStart();
 
             //Carga de los datos
             if (Helper.Usuarios != null && Helper.Usuarios.Count > 0)
             {
                 currentPendienes.AddRange(Helper.Usuarios.OrderBy(o => o.CODCLI));
+                currentPendienes.Add(new UsuarioDTO()
+                {
+                    CHLOCK = "215A-41725",
+                    CODCLI = "00999998",
+                    LSISTEM = "12/14/19/24",
+                    MPRTWIN = "LLAVE=[41725]\r\n",
+                    NOMBRE = "DUMMY PRUEBA 1",
+                    IDDESITEM = 1
+                });
+                currentPendienes.Add(new UsuarioDTO()
+                {
+                    CHLOCK = "207C-11051",
+                    CODCLI = "00999999",
+                    LSISTEM = "19",
+                    MPRTWIN = "LLAVE=[11051]\r\n",
+                    NOMBRE = "DUMMY PRUEBA 2",
+                    IDDESITEM = 2
+                });
+
                 SetGrillaUsuario(currentPendienes);
             }
 
@@ -62,6 +81,7 @@ namespace GrabadorNetEstudios
 
             addTextToLabel = new AddText(AddTextToLabelMethod);
         }
+
 
         private void AddTextToLabelMethod(string text)
         {
@@ -112,10 +132,14 @@ namespace GrabadorNetEstudios
             MessageBox.Show(mensajeArchivo, "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+
         private void DgDatos_SelectionChanged(object sender, EventArgs e)
         {
             try
             {
+                if (((DataGridView)sender).SelectedRows.Count == 0 || ((DataGridView)sender).CurrentRow == null)
+                    return;
+
                 var usu = (UsuarioDTO)((DataGridView)sender).CurrentRow.DataBoundItem;
                 SetGrillaModulo(usu);
             }
@@ -127,8 +151,15 @@ namespace GrabadorNetEstudios
 
         void SplashStart()
         {
-            var oFrm = new frmSplash(Resources.TituloInicialSplash);
-            oFrm.ShowDialog();
+            try
+            {
+                var oFrm = new frmSplash(Resources.TituloInicialSplash);
+                oFrm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         void oG_finalizo(bool lExito)
@@ -141,13 +172,29 @@ namespace GrabadorNetEstudios
                 lblProceso.Text = string.Empty;
                 this.label2.Text = string.Empty;
                 progressBar1.Value = 0;
+                var lista = false;
 
-                var lista = this.currentPendienes.Where(w => !w.FECHACT.HasValue).OrderBy(o => o.CODCLI).ToList();
-
-                if (lista.Count > 1)
+                if (this.rbPendientes.Checked)
                 {
-                    SetGrillaUsuario(lista);
+                    this.currentPendienes = this.currentPendienes.Where(w => !w.FECHACT.HasValue).OrderBy(o => o.CODCLI).ToList();
+                    if (currentPendienes.Count>0)
+                    {
+                        lista = currentPendienes.Count >0;
+                        SetGrillaUsuario(this.currentPendienes);
+                    }
+                }
+                else if (this.rbIndividual.Checked)
+                {
+                    this.currentIndividual = this.currentIndividual.Where(w => !w.FECHACT.HasValue).OrderBy(o => o.CODCLI).ToList();
+                    if (currentIndividual.Count>0)
+                    {
+                        lista = currentIndividual.Count > 0;
+                        SetGrillaUsuario(this.currentIndividual);
+                    }
+                }
 
+                if (lista)
+                {
                     MessageBox.Show(Resources.ProcesoFinalizado, "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     if (MessageBox.Show("¿Continúa con el siguiente suscripción?", "Información", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
@@ -171,14 +218,15 @@ namespace GrabadorNetEstudios
         {
             if (tarea == Resources.RealizandoGrabacion)
             {
+                lblProceso.Text = tarea;
                 progressBar1.Value = porcentaje + 1;
                 this.label2.Text = (porcentaje + 1).ToString();
             }
             else if (tarea.Trim() != string.Empty)
             {
                 lblProceso.Text = tarea;
-                this.label2.Text = porcentaje.ToString();
-                progressBar1.Value = porcentaje;
+                //this.label2.Text = porcentaje.ToString();
+                //progressBar1.Value = porcentaje;
             }
         }
 
@@ -266,14 +314,17 @@ namespace GrabadorNetEstudios
 
         private void buttonFormat_Click(object sender, EventArgs e)
         {
+            SetBottonsEnabled(false);
             if (this.cmbGrabadora.SelectedIndex == -1)
             {
+                SetBottonsEnabled(true);
                 return;
             }
 
             if (!oG.ValidarCapacidadDisco(this.ulista[this.cmbGrabadora.SelectedIndex, 0]))
             {
                 MessageBox.Show("ValCapacidadMedia - No tiene Capacidad el CD!!!!!");
+                SetBottonsEnabled(true);
                 return;
             }
 
@@ -284,6 +335,7 @@ namespace GrabadorNetEstudios
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                SetBottonsEnabled(true);
             }
         }
 
@@ -338,42 +390,81 @@ namespace GrabadorNetEstudios
             Int32.TryParse(this.textBox1.Text, out nro);
             if (nro > 0)
             {
-                this.currentIndividual = Helper.SearchUsuario(nro);
-                if (this.currentIndividual.Count == 0)
-                {
-                    MessageBox.Show("Usuario inexistente", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
                 try
                 {
-                    SetGrillaUsuario(this.currentIndividual);
-                    SetGrillaModulo(this.currentIndividual.First());
+                    var usu = Helper.SearchUsuario(nro);
+                    if (usu == null)
+                    {
+                        MessageBox.Show("Usuario inexistente", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                    else
+                    {
+                        this.currentIndividual.Add(usu);
+                    }
+                    
+                    SetGrillaUsuario(currentIndividual);
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-
             }
         }
 
         private void rbPendientes_CheckedChanged(object sender, EventArgs e)
         {
+            if (!((RadioButton)sender).Checked)
+                return;
+
             SetLayOutBotton(true);
             SetGrillaUsuario(this.currentPendienes);
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
+            if (!((RadioButton)sender).Checked)
+                return;
+
             SetLayOutBotton(false);
+
+            if (this.currentIndividual.Count == 0)
+            {
+                this.dgDatos.DataSource = null;
+                this.dgDatosModulos.DataSource = null;
+            }
+            else
+            {
+                SetGrillaUsuario(this.currentIndividual);
+            }
         }
 
         private void btnBorrar_Click(object sender, EventArgs e)
         {
-            this.currentPendienes = this.currentPendienes.Where(w => w.SELECCION == false).ToList();
+            if (this.rbIndividual.Checked)
+            {
+                var listaEliminar = this.currentIndividual.Where(w => w.SELECCION).ToList();
 
-            SetGrillaUsuario(this.currentPendienes);
+                if (listaEliminar.Count == 0)
+                {
+                    return;
+                }
+                this.currentIndividual.RemoveAll(r => listaEliminar.Any(a => a.CODCLI == r.CODCLI));
+
+                SetGrillaUsuario(this.currentIndividual);
+            }
+            else if (this.rbPendientes.Checked)
+            {
+                var listaEliminar = this.currentPendienes.Where(w => w.SELECCION).ToList();
+
+                if (listaEliminar.Count == 0)
+                {
+                    return;
+                }
+                this.currentPendienes.RemoveAll(r => listaEliminar.Any(a => a.IDDESITEM == r.IDDESITEM));
+
+                SetGrillaUsuario(this.currentPendienes);
+            }
         }
 
         private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
@@ -409,17 +500,15 @@ namespace GrabadorNetEstudios
             this.textBox1.Enabled = !value;
             this.btnBuscar.Enabled = !value;
             this.btnLoad.Enabled = value;
-            this.btnBorrar.Enabled = value;
         }
 
         private void SetBottonsEnabled(bool v)
         {
-
             this.textBox1.Enabled = v;
             this.btnBuscar.Enabled = v;
             this.btnLoad.Enabled = v;
             this.btnBorrar.Enabled = v;
-            this.rbBuscar.Enabled = v;
+            this.rbIndividual.Enabled = v;
             this.rbPendientes.Enabled = v;
 
             this.cmbGrabadora.Enabled = v;
@@ -432,8 +521,6 @@ namespace GrabadorNetEstudios
 
             this.dgDatos.Enabled = v;
             this.dgDatosModulos.Enabled = v;
-
-
         }
 
 
@@ -569,16 +656,13 @@ namespace GrabadorNetEstudios
 
         private void SetGrillaUsuario(List<UsuarioDTO> usu)
         {
+            dgDatos.Columns.Clear();
+
             dgDatos.AutoGenerateColumns = false;
             dgDatos.AllowUserToAddRows = false;
             dgDatos.AllowUserToDeleteRows = false;
             dgDatos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            //dgDatos.ReadOnly = true;
             dgDatos.RowHeadersVisible = false;
-
-            dgDatos.DataSource = usu;
-
-            dgDatos.Columns.Clear();
 
             DataGridViewCheckBoxColumn checkboxColumn = new DataGridViewCheckBoxColumn()
             {
@@ -589,16 +673,16 @@ namespace GrabadorNetEstudios
 
             dgDatos.Columns.Insert(0, checkboxColumn);
 
-            DataGridViewTextBoxColumn columnLLave = new DataGridViewTextBoxColumn()
+            DataGridViewImageColumn imageColumn = new DataGridViewImageColumn()
             {
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleCenter },
-                DataPropertyName = "LLAVE",
                 Width = 30,
-                ReadOnly = true,
-                HeaderText = "LLAVE"
+                DefaultCellStyle = new DataGridViewCellStyle() { NullValue = null },
+                ImageLayout = DataGridViewImageCellLayout.Stretch,
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.None,
+                Resizable = DataGridViewTriState.False
             };
 
-            dgDatos.Columns.Insert(1, columnLLave);
+            dgDatos.Columns.Insert(1, imageColumn);
 
             dgDatos.Columns.Add("CODCLI", "Usuario");
             dgDatos.Columns["CODCLI"].DataPropertyName = "CODCLI";
@@ -610,18 +694,16 @@ namespace GrabadorNetEstudios
             dgDatos.Columns["NOMBRE"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgDatos.Columns["NOMBRE"].ReadOnly = true;
 
-
+            dgDatos.DataSource = usu;
+            dgDatos.Refresh();
         }
 
         private void btnVerificarLlave_Click(object sender, EventArgs e)
         {
-            var usu = (UsuarioDTO)this.dgDatos.CurrentRow.DataBoundItem;
-            
-            this.txtLLaveSuscripcion.Text = usu.CHLOCK;
-
-            var llaveHoliwin = usu.MPRTWIN.Split(new[] { '\r', '\n' }).FirstOrDefault();
-            llaveHoliwin = llaveHoliwin.Substring(llaveHoliwin.IndexOf('[') + 1, llaveHoliwin.IndexOf(']') - llaveHoliwin.IndexOf('[') - 1);
-            this.txtLLaveHoliwin.Text = llaveHoliwin;
+            this.txtLLaveUsb.Text = string.Empty;
+            this.txtLLaveHoliwin.Text = string.Empty;
+            this.txtLLaveSuscripcion.Text = string.Empty;
+            this.pictureBoxLlave.Image = null;
 
             HKEY oHKey = new HKEY();
             Result oResult = oHKey.testHkey();
@@ -632,13 +714,71 @@ namespace GrabadorNetEstudios
             }
             else
             {
-                this.txtLLaveUsb.Text = "No hay llave conectada. Verifique";
+                MessageBox.Show("No hay llave conectada. Verifique.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
 
+            var usu = (UsuarioDTO)this.dgDatos.CurrentRow.DataBoundItem;
 
+            this.txtLLaveSuscripcion.Text = usu.CHLOCK;
 
+            var llaveHoliwin = usu.MPRTWIN.Split(new[] { '\r', '\n' }).FirstOrDefault();
+
+            if (llaveHoliwin.IndexOf('[') > 0 && llaveHoliwin.IndexOf(']') > 0)
+            {
+                llaveHoliwin = llaveHoliwin.Substring(llaveHoliwin.IndexOf('[') + 1, llaveHoliwin.IndexOf(']') - llaveHoliwin.IndexOf('[') - 1);
+            }
+
+            this.txtLLaveHoliwin.Text = llaveHoliwin;
+
+            var suscrip = txtLLaveSuscripcion.Text;
+            var llaveUSB = txtLLaveUsb.Text;
+
+            if (txtLLaveSuscripcion.Text.IndexOf('-') > 0)
+            {
+                suscrip = txtLLaveSuscripcion.Text.Substring(txtLLaveSuscripcion.Text.Length - (txtLLaveSuscripcion.Text.IndexOf('-') + 1));
+            }
+
+            if (txtLLaveUsb.Text.IndexOf('-') > 0)
+            {
+                llaveUSB = txtLLaveUsb.Text.Substring(txtLLaveUsb.Text.Length - (txtLLaveUsb.Text.IndexOf('-') + 1));
+            }
+
+            this.dgDatos.CurrentRow.Cells[1].Value = null;
             this.dgDatos.Refresh();
 
+            if (suscrip.Equals(txtLLaveHoliwin.Text) && suscrip.Equals(llaveUSB))
+            {
+                this.pictureBoxLlave.Image = new System.Drawing.Bitmap(Resources.OkIcon);
+
+                this.dgDatos.CurrentRow.Cells[1] = new DataGridViewImageCell()
+                {
+                    Style = new DataGridViewCellStyle()
+                    {
+                        BackColor = System.Drawing.Color.White,
+                        ForeColor = System.Drawing.Color.White,
+                    },
+                    ImageLayout = DataGridViewImageCellLayout.Stretch,
+                    Value = new System.Drawing.Bitmap(Resources.OkIcon)
+                };
+            }
+            else
+            {
+                this.pictureBoxLlave.Image = new System.Drawing.Bitmap(Resources.Error);
+
+                this.dgDatos.CurrentRow.Cells[1] = new DataGridViewImageCell()
+                {
+                    Style = new DataGridViewCellStyle()
+                    {
+                        BackColor = System.Drawing.Color.White,
+                        ForeColor = System.Drawing.Color.White,
+                    },
+                    ImageLayout = DataGridViewImageCellLayout.Stretch,
+                    Value = new System.Drawing.Bitmap(Resources.Error)
+                };
+            }
+
+            this.dgDatos.Refresh();
         }
     }
 }

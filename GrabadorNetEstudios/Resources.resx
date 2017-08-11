@@ -159,4 +159,11 @@
   <data name="ErrorNoExisteTablaModulo" xml:space="preserve">
     <value>No tiene la tabla Modulos Cargada</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Error" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>icons\error.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="OkIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>icons\heavy-check-mark-icon-6.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

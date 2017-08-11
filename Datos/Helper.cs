@@ -49,7 +49,7 @@ namespace Datos
             }
         }
 
-        public static List<UsuarioDTO> SearchUsuario(int nroContrato)
+        public static UsuarioDTO SearchUsuario(int nroContrato)
         {
             using (var repo = new GrabadorRepository())
             {
