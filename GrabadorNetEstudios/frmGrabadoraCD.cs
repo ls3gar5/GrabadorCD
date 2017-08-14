@@ -1,14 +1,11 @@
-﻿using System;
-using System.Windows.Forms;
-using Grabador;
-using System.Data;
-using System.Collections.Generic;
-using System.Linq;
-using Datos;
-using System.Threading.Tasks;
-using System.IO;
-using System.ComponentModel;
+﻿using Datos;
 using Holistor.Proteccion;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace GrabadorNetEstudios
 {
@@ -39,7 +36,7 @@ namespace GrabadorNetEstudios
             oG.progreso += new Grabador.Grabador.ProgresoHandler(oG_progreso);
 
             dgDatos.SelectionChanged += DgDatos_SelectionChanged;
-            
+
             SplashStart();
 
             //Carga de los datos
@@ -80,56 +77,67 @@ namespace GrabadorNetEstudios
             m_Watcher.Renamed += M_Watcher_Renamed;
 
             addTextToLabel = new AddText(AddTextToLabelMethod);
+
         }
 
 
         private void AddTextToLabelMethod(string text)
         {
-            this.lblProceso.Text = text;
+            this.lblEstado.Text = text;
+            this.pictureBoxEstado.Image = new System.Drawing.Bitmap(Resources.Info);
         }
 
 
         private void M_Watcher_Renamed(object sender, RenamedEventArgs e)
         {
             m_Watcher.EnableRaisingEvents = false;
-            this.lblProceso.Text += mensajeArchivo;
-            MessageBox.Show(mensajeArchivo, "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            if (lblEstado.InvokeRequired)
+                lblEstado.Invoke(addTextToLabel, new object[] { mensajeArchivo });
+            else
+            {
+                lblEstado.Text = mensajeArchivo;
+                this.pictureBoxEstado.Image = new System.Drawing.Bitmap(Resources.Info);
+            }
         }
 
         private void M_Watcher_Created(object sender, FileSystemEventArgs e)
         {
             m_Watcher.EnableRaisingEvents = false;
 
-            if (lblProceso.InvokeRequired)
-                lblProceso.Invoke(addTextToLabel, new object[] { mensajeArchivo });
+            if (lblEstado.InvokeRequired)
+                lblEstado.Invoke(addTextToLabel, new object[] { mensajeArchivo });
             else
-                lblProceso.Text = mensajeArchivo;
-
-            MessageBox.Show(mensajeArchivo, "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            {
+                lblEstado.Text = mensajeArchivo;
+                this.pictureBoxEstado.Image = new System.Drawing.Bitmap(Resources.Info);
+            }
         }
 
         private void M_Watcher_Deleted(object sender, FileSystemEventArgs e)
         {
             m_Watcher.EnableRaisingEvents = false;
 
-            if (lblProceso.InvokeRequired)
-                lblProceso.Invoke(addTextToLabel, new object[] { mensajeArchivo });
+            if (lblEstado.InvokeRequired)
+                lblEstado.Invoke(addTextToLabel, new object[] { mensajeArchivo });
             else
-                lblProceso.Text = mensajeArchivo;
-
-            MessageBox.Show(mensajeArchivo, "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            {
+                lblEstado.Text = mensajeArchivo;
+                this.pictureBoxEstado.Image = new System.Drawing.Bitmap(Resources.Info);
+            }
         }
 
         private void M_Watcher_Changed(object sender, FileSystemEventArgs e)
         {
             m_Watcher.EnableRaisingEvents = false;
 
-            if (lblProceso.InvokeRequired)
-                lblProceso.Invoke(addTextToLabel, new object[] { mensajeArchivo });
+            if (lblEstado.InvokeRequired)
+                lblEstado.Invoke(addTextToLabel, new object[] { mensajeArchivo });
             else
-                lblProceso.Text = mensajeArchivo;
-
-            MessageBox.Show(mensajeArchivo, "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            {
+                lblEstado.Text = mensajeArchivo;
+                this.pictureBoxEstado.Image = new System.Drawing.Bitmap(Resources.Info);
+            }
         }
 
 
@@ -177,19 +185,29 @@ namespace GrabadorNetEstudios
                 if (this.rbPendientes.Checked)
                 {
                     this.currentPendienes = this.currentPendienes.Where(w => !w.FECHACT.HasValue).OrderBy(o => o.CODCLI).ToList();
-                    if (currentPendienes.Count>0)
+                    if (currentPendienes.Count > 0)
                     {
-                        lista = currentPendienes.Count >0;
+                        lista = currentPendienes.Count > 0;
                         SetGrillaUsuario(this.currentPendienes);
+                    }
+                    else if (this.currentPendienes.Count==0)
+                    {
+                        this.dgDatos.DataSource = null;
+                        this.dgDatosModulos.DataSource = null;
                     }
                 }
                 else if (this.rbIndividual.Checked)
                 {
                     this.currentIndividual = this.currentIndividual.Where(w => !w.FECHACT.HasValue).OrderBy(o => o.CODCLI).ToList();
-                    if (currentIndividual.Count>0)
+                    if (currentIndividual.Count > 0)
                     {
                         lista = currentIndividual.Count > 0;
                         SetGrillaUsuario(this.currentIndividual);
+                    }
+                    else if (currentIndividual.Count == 0)
+                    {
+                        this.dgDatos.DataSource = null;
+                        this.dgDatosModulos.DataSource = null;
                     }
                 }
 
@@ -225,8 +243,12 @@ namespace GrabadorNetEstudios
             else if (tarea.Trim() != string.Empty)
             {
                 lblProceso.Text = tarea;
-                //this.label2.Text = porcentaje.ToString();
-                //progressBar1.Value = porcentaje;
+                if (porcentaje>0)
+                {
+                    this.label2.Text = porcentaje.ToString();
+                    progressBar1.Value = porcentaje;
+                }
+
             }
         }
 
@@ -267,8 +289,16 @@ namespace GrabadorNetEstudios
                 //{
                 //    cmbVelo.Enabled = false;
                 //}
-
-                this.labelMediaType.Text = oG.DatosDisco(id);
+                try
+                {
+                    this.labelMediaType.Text = oG.DatosDisco(id);
+                }
+                catch 
+                {
+                    this.labelMediaType.Text = "";
+                    this.btnRefresh.Enabled = false;
+                }
+               
 
                 AgregarDirectorioFila(Helper.GetPATHESTLOCAL);
 
@@ -330,7 +360,7 @@ namespace GrabadorNetEstudios
 
             try
             {
-                this.oG.BorrarDisco(this.ulista[this.cmbGrabadora.SelectedIndex, 0], this.checkBoxQuickFormat.Checked);
+                this.oG.BorrarDisco(this.ulista[this.cmbGrabadora.SelectedIndex, 0], true);
             }
             catch (Exception ex)
             {
@@ -402,7 +432,7 @@ namespace GrabadorNetEstudios
                     {
                         this.currentIndividual.Add(usu);
                     }
-                    
+
                     SetGrillaUsuario(currentIndividual);
                 }
                 catch (Exception ex)
@@ -514,7 +544,6 @@ namespace GrabadorNetEstudios
             this.cmbGrabadora.Enabled = v;
             this.btnRefresh.Enabled = v;
             this.buttonFormat.Enabled = v;
-            this.checkBoxQuickFormat.Enabled = v;
             this.btnExpulsarCD.Enabled = v;
             this.btnGrabar.Enabled = v;
             this.btnVerificarLlave.Enabled = v;
@@ -642,16 +671,21 @@ namespace GrabadorNetEstudios
             dgDatosModulos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgDatosModulos.RowHeadersVisible = false;
             dgDatosModulos.ReadOnly = true;
-
+            dgDatosModulos.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            dgDatosModulos.MultiSelect = false;
             dgDatosModulos.DataSource = modulos;
 
             dgDatosModulos.Columns.Clear();
             dgDatosModulos.Columns.Add("Modulo", "Modulo");
             dgDatosModulos.Columns["Modulo"].DataPropertyName = "Modulo";
             dgDatosModulos.Columns["Modulo"].Width = 80;
+            dgDatosModulos.Columns["Modulo"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dgDatosModulos.Columns["Modulo"].Resizable = DataGridViewTriState.False;
+
             dgDatosModulos.Columns.Add("Descrip", "Descripción");
             dgDatosModulos.Columns["Descrip"].DataPropertyName = "Descrip";
             dgDatosModulos.Columns["Descrip"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgDatosModulos.Columns["Modulo"].Resizable = DataGridViewTriState.False;
         }
 
         private void SetGrillaUsuario(List<UsuarioDTO> usu)
@@ -663,12 +697,18 @@ namespace GrabadorNetEstudios
             dgDatos.AllowUserToDeleteRows = false;
             dgDatos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgDatos.RowHeadersVisible = false;
+            dgDatos.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            dgDatos.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+            dgDatos.AllowUserToResizeRows = false;
+            dgDatos.MultiSelect = false;
 
             DataGridViewCheckBoxColumn checkboxColumn = new DataGridViewCheckBoxColumn()
             {
                 DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleCenter },
                 DataPropertyName = "SELECCION",
-                Width = 20
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.None,
+                Width = 20,
+                Resizable = DataGridViewTriState.False
             };
 
             dgDatos.Columns.Insert(0, checkboxColumn);
@@ -684,15 +724,17 @@ namespace GrabadorNetEstudios
 
             dgDatos.Columns.Insert(1, imageColumn);
 
-            dgDatos.Columns.Add("CODCLI", "Usuario");
+            dgDatos.Columns.Add("CODCLI", "Suscrip.");
             dgDatos.Columns["CODCLI"].DataPropertyName = "CODCLI";
             dgDatos.Columns["CODCLI"].Width = 70;
             dgDatos.Columns["CODCLI"].ReadOnly = true;
+            dgDatos.Columns["CODCLI"].Resizable = DataGridViewTriState.False;
 
             dgDatos.Columns.Add("NOMBRE", "Nombre");
             dgDatos.Columns["NOMBRE"].DataPropertyName = "NOMBRE";
             dgDatos.Columns["NOMBRE"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgDatos.Columns["NOMBRE"].ReadOnly = true;
+            dgDatos.Columns["NOMBRE"].Resizable = DataGridViewTriState.False;
 
             dgDatos.DataSource = usu;
             dgDatos.Refresh();
